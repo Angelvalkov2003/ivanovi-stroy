@@ -1,0 +1,136 @@
+---
+import { Icon } from 'astro-icon/components';
+import { serviceCategories } from '~/data/services';
+---
+
+<section id="uslugi-galeria" class="py-12 md:py-16 bg-white">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6">
+    <div class="text-center max-w-3xl mx-auto mb-10">
+      <p class="text-sm font-bold uppercase tracking-wider text-[#c79305] mb-2">Портфолио</p>
+      <h2 class="text-3xl md:text-4xl font-bold text-[#141414] mb-3">Разгледайте нашите услуги</h2>
+      <p class="text-[#8f8f8f]">
+        Изберете категория, за да видите примерни реализации. Натиснете „Гипс картон“ или „Бетон и кофраж“ за подробни
+        снимки.
+      </p>
+    </div>
+
+    <div
+      class="grid grid-cols-2 gap-3 mb-10 max-w-md mx-auto md:max-w-none md:flex md:flex-wrap md:justify-center"
+      role="tablist"
+      aria-label="Категории услуги"
+    >
+      {
+        serviceCategories.map((cat, i) => (
+          <button
+            type="button"
+            role="tab"
+            aria-selected={i === 0}
+            data-service-tab={cat.id}
+            class:list={[
+              'service-tab flex flex-col items-center justify-center gap-1.5 w-full min-h-[4.5rem] px-2 py-3 rounded-xl text-xs leading-tight font-semibold border transition-all duration-200 text-center',
+              'md:min-h-0 md:flex-row md:inline-flex md:w-auto md:rounded-full md:px-4 md:py-2.5 md:text-sm md:gap-2',
+              i === 0
+                ? 'bg-[#c79305] border-[#c79305] text-white shadow-md'
+                : 'bg-white border-[#8f8f8f]/40 text-[#141414] hover:border-[#c79305] hover:text-[#c79305]',
+            ]}
+          >
+            <Icon name={cat.icon} class="w-5 h-5 shrink-0 md:w-4 md:h-4" />
+            <span class="block w-full">{cat.title}</span>
+          </button>
+        ))
+      }
+    </div>
+
+    {
+      serviceCategories.map((cat, i) => (
+        <div data-service-panel={cat.id} class:list={['service-panel', i !== 0 && 'hidden']} role="tabpanel">
+          <div class="bg-[#f8f8f8] rounded-2xl p-6 md:p-8 border border-[#8f8f8f]/20">
+            <h3 class="text-2xl font-bold text-[#141414] mb-2">{cat.title}</h3>
+            <p class="text-[#8f8f8f] mb-6 max-w-2xl">{cat.summary}</p>
+
+            {cat.subsections ? (
+              <div class="space-y-10">
+                {cat.subsections.map((sub) => (
+                  <div>
+                    <h4 class="text-lg font-semibold text-[#c79305] mb-4 flex items-center gap-2">
+                      <span class="w-8 h-0.5 bg-[#c79305] rounded" />
+                      {sub.title}
+                    </h4>
+                    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {sub.images.map((img) => (
+                        <figure class="group overflow-hidden rounded-xl shadow-sm border border-[#8f8f8f]/15">
+                          <img
+                            src={img.src}
+                            alt={img.alt}
+                            class="w-full aspect-[4/3] object-cover transition-transform duration-300 group-hover:scale-105"
+                            loading="lazy"
+                            width="400"
+                            height="300"
+                          />
+                          <figcaption class="px-3 py-2 text-sm text-[#8f8f8f] bg-white">{img.alt}</figcaption>
+                        </figure>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {cat.images?.map((img) => (
+                  <figure class="group overflow-hidden rounded-xl shadow-sm border border-[#8f8f8f]/15">
+                    <img
+                      src={img.src}
+                      alt={img.alt}
+                      class="w-full aspect-[4/3] object-cover transition-transform duration-300 group-hover:scale-105"
+                      loading="lazy"
+                      width="400"
+                      height="300"
+                    />
+                    <figcaption class="px-3 py-2 text-sm text-[#8f8f8f] bg-white">{img.alt}</figcaption>
+                  </figure>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      ))
+    }
+  </div>
+</section>
+
+<script>
+  function initServiceGallery() {
+    const tabs = document.querySelectorAll('[data-service-tab]');
+    const panels = document.querySelectorAll('[data-service-panel]');
+    if (!tabs.length) return;
+
+    tabs.forEach((tab) => {
+      tab.addEventListener('click', () => {
+        const id = tab.getAttribute('data-service-tab');
+        tabs.forEach((t) => {
+          const active = t === tab;
+          t.setAttribute('aria-selected', String(active));
+          t.classList.toggle('bg-[#c79305]', active);
+          t.classList.toggle('border-[#c79305]', active);
+          t.classList.toggle('text-white', active);
+          t.classList.toggle('shadow-md', active);
+          t.classList.toggle('bg-white', !active);
+          t.classList.toggle('border-[#8f8f8f]/40', !active);
+          t.classList.toggle('text-[#141414]', !active);
+        });
+        panels.forEach((p) => {
+          p.classList.toggle('hidden', p.getAttribute('data-service-panel') !== id);
+        });
+      });
+    });
+
+    const hash = window.location.hash.replace('#', '');
+    if (hash) {
+      const target = document.querySelector(`[data-service-tab="${hash}"]`);
+      target?.click();
+    }
+  }
+
+  initServiceGallery();
+  document.addEventListener('astro:page-load', initServiceGallery);
+</script>

@@ -1,0 +1,14 @@
+---
+import { SITE, METADATA } from 'astrowind:config';
+
+const siteUrl = SITE?.site || String(Astro.site);
+const logoUrl = new URL('/logo.jpg', siteUrl).href;
+const title = METADATA?.title?.default || SITE?.name || '';
+---
+
+<meta property="og:image" content={logoUrl} />
+<meta property="og:image:secure_url" content={logoUrl} />
+<meta property="og:image:type" content="image/jpeg" />
+<meta property="og:image:alt" content={title} />
+<meta name="twitter:image" content={logoUrl} />
+<meta name="twitter:image:alt" content={title} />

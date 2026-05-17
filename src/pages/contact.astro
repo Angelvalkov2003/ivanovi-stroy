@@ -1,79 +1,62 @@
 ---
 import Layout from '~/layouts/PageLayout.astro';
 import HeroText from '~/components/widgets/HeroText.astro';
-import ContactUs from '~/components/widgets/Contact.astro';
 import Features2 from '~/components/widgets/Features2.astro';
+import ContactButtons from '~/components/ContactButtons.astro';
+import { SITE_BRAND, SITE_CONTACT } from '~/data/site';
 
 const metadata = {
-  title: 'Contact',
+  title: 'Контакти',
+  description: `Свържете се с ${SITE_BRAND.name} — телефон ${SITE_CONTACT.phone}, София и областта. WhatsApp и Viber.`,
 };
 ---
 
 <Layout metadata={metadata}>
-  <!-- HeroText Widget ******************* -->
-
-  <HeroText tagline="Contact" title="Let's Connect!" />
-
-  <ContactUs
-    id="form"
-    title="Drop us a message today!"
-    subtitle="For quicker answers, explore our FAQs section. You may find the solution you're looking  for right there! If not, our support team is delighted to help you."
-    inputs={[
-      {
-        type: 'text',
-        name: 'name',
-        label: 'Name',
-      },
-      {
-        type: 'email',
-        name: 'email',
-        label: 'Email',
-      },
-    ]}
-    textarea={{
-      label: 'Message',
-    }}
-    disclaimer={{
-      label:
-        'By submitting this contact form, you acknowledge and agree to the collection of your personal information.',
-    }}
-    description="Our support team typically responds within 24 business hours."
-  />
-
-  <!-- Features2 Widget ************** -->
+  <HeroText tagline="Контакти" title="Обадете се сега!" />
 
   <Features2
-    title="We are here to help!"
+    title="Свържете се с нас"
+    subtitle="Безплатен оглед и оферта · Бърз отговор"
+    columns={2}
     items={[
       {
-        title: 'General support',
-        description: `Chat with us for inquiries related to account management, website navigation, payment issues, accessing purchased templates or general questions about the website's functionality.`,
+        title: 'Телефон',
+        description: `<a href="tel:${SITE_CONTACT.phoneTel}" class="text-[#c79305] font-bold text-xl">${SITE_CONTACT.phone}</a>`,
+        icon: 'tabler:phone',
       },
       {
-        title: 'Contact sales',
-        description:
-          'Chat with us for questions about purchases, customization options, licensing for commercial use, inquiries about specific template, etc.',
+        title: 'WhatsApp',
+        description: `<a href="${SITE_CONTACT.whatsapp}" target="_blank" rel="noopener" class="text-[#c79305] hover:underline">Пишете в WhatsApp</a>`,
+        icon: 'tabler:brand-whatsapp',
       },
       {
-        title: 'Technical support',
-        description:
-          'Chat with us when facing issues like template installation, problems editing difficulties, compatibility issues with software or download errors, or other technical challenges related to using the templates.',
+        title: 'Viber',
+        description: `<a href="${SITE_CONTACT.viber}" class="text-[#c79305] hover:underline">Пишете в Viber</a>`,
+        icon: 'tabler:message-circle',
       },
       {
-        title: 'Phone',
-        description: '+1 (234) 567-890',
-        icon: 'tabler:headset',
-      },
-      {
-        title: 'Email',
-        description: 'contact@support.com',
+        title: 'Имейл',
+        description: `<a href="mailto:${SITE_CONTACT.email}" class="text-[#c79305] hover:underline">${SITE_CONTACT.email}</a>`,
         icon: 'tabler:mail',
       },
       {
-        title: 'Location',
-        description: '1234 Lorem Ipsum St, 12345, Miami, EEUU',
+        title: 'Локация',
+        description: SITE_CONTACT.location,
         icon: 'tabler:map-pin',
+      },
+      {
+        title: 'Работно време',
+        description: 'Работа без почивен ден — удобно за спешни поръчки',
+        icon: 'tabler:clock',
       },
     ]}
   />
+
+  <section class="py-12 bg-[#f8f8f8]">
+    <div class="max-w-xl mx-auto px-4 text-center">
+      <h2 class="text-2xl font-bold text-[#141414] mb-4">Обадете се сега!</h2>
+      <p class="text-[#8f8f8f] mb-6">Безплатен оглед и оферта за вашия обект в София и областта.</p>
+      <ContactButtons size="md" />
+    </div>
+  </section>
 </Layout>

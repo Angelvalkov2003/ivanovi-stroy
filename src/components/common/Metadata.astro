@@ -67,9 +67,12 @@ function buildOpenGraph(og: MetaDataOpenGraph): SEOProps['openGraph'] | undefine
   };
 }
 
+const ogImageUrl = firstImage?.url || '';
+
 const mergedTwitter = merge(
   {
-    card: (adaptedOg?.images?.length ? 'summary_large_image' : 'summary') as 'summary_large_image' | 'summary',
+    card: (ogImageUrl ? 'summary_large_image' : 'summary') as 'summary_large_image' | 'summary',
+    image: ogImageUrl || undefined,
   },
   METADATA?.twitter
     ? {

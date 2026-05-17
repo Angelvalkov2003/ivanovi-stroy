@@ -1,9 +1,13 @@
 ---
-import { SITE } from 'astrowind:config';
+import { SITE_BRAND } from '~/data/site';
 ---
 
-<span
-  class="self-center ml-2 rtl:ml-0 rtl:mr-2 text-2xl md:text-xl font-bold text-gray-900 whitespace-nowrap dark:text-white"
->
-  🚀 {SITE?.name}
-</span>
+<img
+  src="/logo.jpg"
+  alt={`${SITE_BRAND.name} — ${SITE_BRAND.tagline}`}
+  class="h-16 w-auto max-w-full object-contain md:h-11"
+  width="240"
+  height="72"
+  loading="eager"
+  fetchpriority="high"
+/>

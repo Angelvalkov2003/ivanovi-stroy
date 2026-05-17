@@ -61,7 +61,17 @@ export const adaptOpenGraphImages = async (
       const resolved = await findImage(image.url);
       if (!resolved) return { url: '' };
 
-      // Generate an optimized JPG via Astro's image service (Sharp by default).
+      // Public or remote URLs — use absolute path (required for Messenger, Viber, Instagram).
+      if (typeof resolved === 'string') {
+        const absoluteUrl = resolved.startsWith('http') ? resolved : String(new URL(resolved, astroSite));
+        return {
+          url: absoluteUrl,
+          width: image.width || OG_WIDTH,
+          height: image.height || OG_HEIGHT,
+        };
+      }
+
+      // Local assets — optimize via Sharp.
       const optimized = await getImage({
         src: resolved,
         width: OG_WIDTH,

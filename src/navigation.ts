@@ -25,9 +25,11 @@ export const footerData = {
       links: [
         { text: 'Къртене и извозване', href: getPermalink('/services#demolition') },
         { text: 'Гипс картон', href: getPermalink('/services#gips') },
-        { text: 'Бетон и кофраж', href: getPermalink('/services#beton') },
+        { text: 'Боя и шпакловка', href: getPermalink('/services#boya') },
+        { text: 'Плочки и баня', href: getPermalink('/services#plochki') },
+        { text: 'Кофраж и бетон', href: getPermalink('/services#beton') },
+        { text: 'Покриви', href: getPermalink('/services#pokrivi') },
         { text: 'ВиК и ЕЛ', href: getPermalink('/services#vik-el') },
-        { text: 'Баня и плочки', href: getPermalink('/services#bathroom') },
       ],
     },
     {

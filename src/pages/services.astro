@@ -2,9 +2,11 @@
 import Layout from '~/layouts/PageLayout.astro';
 import HeroText from '~/components/widgets/HeroText.astro';
 import ServiceGallery from '~/components/ServiceGallery.astro';
+import GallerySearch from '~/components/GallerySearch.astro';
 import Features2 from '~/components/widgets/Features2.astro';
 import CallToAction from '~/components/widgets/CallToAction.astro';
-import { serviceCategories } from '~/data/services';
+import { serviceCategories, hasRealPhotos } from '~/data/services';
+import { entranceIntersect } from '~/utils/entrance';
 import { SITE_BRAND, SITE_CONTACT } from '~/data/site';
 
 const metadata = {
@@ -17,29 +19,35 @@ const metadata = {
 <Layout metadata={metadata}>
   <HeroText tagline="Услуги" title="Строителни услуги в София" />
 
-  <section class="pb-8 -mt-8">
+  <section class:list={[entranceIntersect(), 'pb-8 -mt-8']}>
     <div class="max-w-3xl mx-auto px-4 text-center text-[#8f8f8f]">
       <p>
-        {SITE_BRAND.name} предлага пълен спектър строителни и ремонтни дейности — от груб строеж до баня до ключ. Натиснете
-        категория по-долу за снимки и детайли.
+        {SITE_BRAND.name} предлага пълен спектър строителни и ремонтни дейности — от груб строеж до баня до ключ.
+        Натиснете квадратче със снимка по-долу, за да разгледате обектите ни.
       </p>
     </div>
   </section>
 
   <Features2
+    id="napravlenia"
     columns={3}
     title="Нашите направления"
-    subtitle="Всички ремонтни дейности на едно място"
+    subtitle="Пълен списък услуги — снимки по-долу"
     items={serviceCategories.map((cat) => ({
       title: cat.title,
       description: cat.summary,
       icon: cat.icon,
-      callToAction: {
-        text: 'Виж галерия',
-        href: `#${cat.id}`,
-      },
+      callToAction: hasRealPhotos(cat)
+        ? {
+            text: 'Виж галерия',
+            href: `#${cat.id}`,
+            class: 'gallery-open-link',
+          }
+        : undefined,
     }))}
-  />
+  >
+    <GallerySearch slot="afterSubtitle" />
+  </Features2>
 
   <ServiceGallery />
 

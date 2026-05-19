@@ -4,6 +4,7 @@ import HeroText from '~/components/widgets/HeroText.astro';
 import Features2 from '~/components/widgets/Features2.astro';
 import ContactButtons from '~/components/ContactButtons.astro';
 import { SITE_BRAND, SITE_CONTACT } from '~/data/site';
+import { entranceIntersect } from '~/utils/entrance';
 
 const metadata = {
   title: 'Контакти',
@@ -52,11 +53,17 @@ const metadata = {
     ]}
   />
 
-  <section class="py-12 bg-[#f8f8f8]">
+  <section class:list={[entranceIntersect(), 'py-12 bg-[#f8f8f8]']}>
     <div class="max-w-xl mx-auto px-4 text-center">
-      <h2 class="text-2xl font-bold text-[#141414] mb-4">Обадете се сега!</h2>
-      <p class="text-[#8f8f8f] mb-6">Безплатен оглед и оферта за вашия обект в София и областта.</p>
-      <ContactButtons size="md" />
+      <h2 class:list={[entranceIntersect(), 'text-2xl font-bold text-[#141414] mb-4']} style="--i: 0">
+        Обадете се сега!
+      </h2>
+      <p class:list={[entranceIntersect(), 'text-[#8f8f8f] mb-6']} style="--i: 1">
+        Безплатен оглед и оферта за вашия обект в София и областта.
+      </p>
+      <div class:list={[entranceIntersect(), 'flex justify-center']} style="--i: 2">
+        <ContactButtons size="md" />
+      </div>
     </div>
   </section>
 </Layout>

@@ -193,6 +193,8 @@ export interface Hero extends Omit<Headline, 'classes'>, Omit<Widget, 'isDark' |
   content?: string;
   actions?: string | CallToAction[];
   image?: string | unknown;
+  /** Staggered load-in animations for title, subtitle, and actions (homepage). */
+  animated?: boolean;
 }
 
 export interface Team extends Omit<Headline, 'classes'>, Widget {

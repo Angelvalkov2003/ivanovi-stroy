@@ -1,6 +1,7 @@
 ---
 import type { Headline as Props } from '~/types';
 import { twMerge } from 'tailwind-merge';
+import { entranceIntersect } from '~/utils/entrance';
 
 const {
   title = await Astro.slots.render('title'),
@@ -20,16 +21,31 @@ const {
   (title || subtitle || tagline) && (
     <div class={twMerge('mb-8 md:mx-auto md:mb-12 text-center', containerClass)}>
       {tagline && (
-        <p class="text-base text-secondary dark:text-blue-200 font-bold tracking-wide uppercase" set:html={tagline} />
+        <p
+          class:list={[entranceIntersect(), 'text-base text-secondary dark:text-blue-200 font-bold tracking-wide uppercase']}
+          style="--i: 0"
+          set:html={tagline}
+        />
       )}
       {title && (
         <h2
-          class={twMerge('font-bold leading-tighter tracking-tighter font-heading text-heading text-3xl', titleClass)}
+          class={twMerge(
+            entranceIntersect(),
+            'font-bold leading-tighter tracking-tighter font-heading text-heading text-3xl',
+            titleClass
+          )}
+          style="--i: 1"
           set:html={title}
         />
       )}
 
-      {subtitle && <p class={twMerge('mt-4 text-muted', subtitleClass)} set:html={subtitle} />}
+      {subtitle && (
+        <p
+          class={twMerge(entranceIntersect(), 'mt-4 text-muted', subtitleClass)}
+          style="--i: 2"
+          set:html={subtitle}
+        />
+      )}
     </div>
   )
 }

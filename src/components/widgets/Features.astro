@@ -4,6 +4,7 @@ import Button from '~/components/ui/Button.astro';
 import Headline from '~/components/ui/Headline.astro';
 import WidgetWrapper from '~/components/ui/WidgetWrapper.astro';
 import type { Features as Props } from '~/types';
+import { entranceIntersect } from '~/utils/entrance';
 
 const {
   title = await Astro.slots.render('title'),
@@ -35,8 +36,8 @@ const columnsClass =
   {
     items.length > 0 && (
       <div class:list={['grid mx-auto gap-8 md:gap-y-12', columnsClass]}>
-        {items.map(({ title: itemTitle, description, icon, callToAction }) => (
-          <div class="intersect-once motion-safe:md:opacity-0 motion-safe:md:intersect:animate-fade">
+        {items.map(({ title: itemTitle, description, icon, callToAction }, index) => (
+          <div class={entranceIntersect()} style={`--i: ${index}`}>
             <div class="flex flex-row max-w-md">
               {(icon || defaultIcon) && (
                 <div class="flex justify-center">

@@ -3,6 +3,7 @@ import Image from '~/components/common/Image.astro';
 import Button from '~/components/ui/Button.astro';
 
 import type { Hero as Props } from '~/types';
+import { entranceIntersect, entranceLoad } from '~/utils/entrance';
 
 const {
   title = await Astro.slots.render('title'),
@@ -13,12 +14,18 @@ const {
   actions = await Astro.slots.render('actions'),
   image = await Astro.slots.render('image'),
 
+  animated = false,
   id,
   bg = await Astro.slots.render('bg'),
 } = Astro.props;
+
+const intersectFade = entranceIntersect();
 ---
 
-<section class="relative md:-mt-[76px] not-prose" {...id ? { id } : {}}>
+<section
+  class:list={['relative md:-mt-[76px] not-prose', animated && 'entrance-load']}
+  {...id ? { id } : {}}
+>
   <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
     <slot name="bg">
       {bg ? <Fragment set:html={bg} /> : null}
@@ -31,7 +38,10 @@ const {
         {
           tagline && (
             <p
-              class="text-base text-secondary dark:text-blue-200 font-bold tracking-wide uppercase intersect-once intersect-quarter motion-safe:md:opacity-0 motion-safe:md:intersect:animate-fade"
+              class:list={[
+                animated ? entranceLoad(0) : entranceIntersect(),
+                'text-base text-secondary dark:text-blue-200 font-bold tracking-wide uppercase',
+              ]}
               set:html={tagline}
             />
           )
@@ -39,7 +49,11 @@ const {
         {
           title && (
             <h1
-              class="text-5xl md:text-6xl font-bold leading-tighter tracking-tighter mb-4 font-heading dark:text-gray-200 intersect-once intersect-quarter motion-safe:md:opacity-0 motion-safe:md:intersect:animate-fade"
+              class:list={[
+                'font-bold leading-tighter tracking-tighter mb-4 font-heading dark:text-gray-200',
+                !animated && 'text-5xl md:text-6xl',
+                !animated && intersectFade,
+              ]}
               set:html={title}
             />
           )
@@ -48,14 +62,22 @@ const {
           {
             subtitle && (
               <p
-                class="text-xl text-muted mb-6 dark:text-slate-300 intersect-once intersect-quarter motion-safe:md:opacity-0 motion-safe:md:intersect:animate-fade"
+                class:list={[
+                  'text-xl text-muted mb-6 dark:text-slate-300',
+                  animated ? entranceLoad(2) : intersectFade,
+                ]}
                 set:html={subtitle}
               />
             )
           }
           {
             actions && (
-              <div class="max-w-xs sm:max-w-md m-auto flex flex-nowrap flex-col sm:flex-row sm:justify-center gap-4 intersect-once intersect-quarter motion-safe:md:opacity-0 motion-safe:md:intersect:animate-fade">
+              <div
+                class:list={[
+                  'max-w-xs sm:max-w-md m-auto flex flex-nowrap flex-col sm:flex-row sm:justify-center gap-4',
+                  animated ? entranceLoad(3) : intersectFade,
+                ]}
+              >
                 {Array.isArray(actions) ? (
                   actions.map((action) => (
                     <div class="flex w-full sm:w-auto">
@@ -72,7 +94,9 @@ const {
         {content && <Fragment set:html={content} />}
       </div>
       <div
-        class="intersect-once intersect-no-queue intersect-quarter motion-safe:md:opacity-0 motion-safe:md:intersect:animate-fade"
+        class:list={[
+          animated ? entranceLoad(4) : entranceIntersect('intersect-no-queue'),
+        ]}
       >
         {
           image && (

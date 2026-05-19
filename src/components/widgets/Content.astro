@@ -5,6 +5,7 @@ import Headline from '~/components/ui/Headline.astro';
 import WidgetWrapper from '~/components/ui/WidgetWrapper.astro';
 import Image from '~/components/common/Image.astro';
 import type { Content as Props } from '~/types';
+import { entranceIntersect } from '~/utils/entrance';
 
 const {
   title = await Astro.slots.render('title'),
@@ -53,7 +54,9 @@ const columnsClass =
   <div class="mx-auto max-w-7xl p-4 md:px-8">
     <div class={`md:flex ${isReversed ? 'md:flex-row-reverse' : ''} md:gap-16`}>
       <div class="md:basis-1/2 self-center">
-        {content && <div class="mb-12 text-lg dark:text-slate-400" set:html={content} />}
+        {content && (
+          <div class:list={[entranceIntersect(), 'mb-12 text-lg dark:text-slate-400']} set:html={content} />
+        )}
 
         {
           callToAction && (
@@ -66,8 +69,8 @@ const columnsClass =
         {
           items.length > 0 && (
             <div class:list={['grid mx-auto gap-y-4 md:gap-y-8 gap-8', columnsClass]}>
-              {items.map(({ title: itemTitle, description, icon, callToAction }) => (
-                <div class="intersect-once motion-safe:md:opacity-0 motion-safe:md:intersect:animate-fade">
+              {items.map(({ title: itemTitle, description, icon, callToAction }, index) => (
+                <div class={entranceIntersect()} style={`--i: ${index}`}>
                   <div class="flex flex-row max-w-none">
                     <div class="flex justify-center">
                       <Icon
@@ -108,7 +111,7 @@ const columnsClass =
       <div aria-hidden="true" class="mt-10 md:mt-0 md:basis-1/2">
         {
           image && (
-            <div class="relative m-auto max-w-4xl">
+            <div class:list={[entranceIntersect(), 'relative m-auto max-w-4xl']}>
               {typeof image === 'string' ? (
                 <Fragment set:html={image} />
               ) : (

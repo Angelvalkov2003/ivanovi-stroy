@@ -1,0 +1,28 @@
+---
+import { Icon } from 'astro-icon/components';
+---
+
+<div class="max-w-xl" aria-label="Търсене в галерията">
+  <label for="gallery-search" class="sr-only">Търсене на услуга</label>
+  <div class="relative">
+    <Icon
+      name="tabler:search"
+      class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#8f8f8f]"
+    />
+    <input
+      type="search"
+      id="gallery-search"
+      class="gallery-search-input w-full rounded-xl border border-[#8f8f8f]/30 bg-[#faf8f4] py-3 pl-12 pr-10 text-[#141414] placeholder:text-[#8f8f8f] shadow-sm transition-colors focus:border-[#c79305] focus:outline-none focus:ring-2 focus:ring-[#c79305]/25"
+      placeholder="Търси услуга — боя, плочки, ламинат..."
+      autocomplete="off"
+    />
+    <button
+      type="button"
+      id="gallery-search-clear"
+      class="absolute right-3 top-1/2 -translate-y-1/2 hidden p-1 rounded-full text-[#8f8f8f] hover:text-[#141414] hover:bg-[#8f8f8f]/10"
+      aria-label="Изчисти търсенето"
+    >
+      <Icon name="tabler:x" class="w-4 h-4" />
+    </button>
+  </div>
+</div>

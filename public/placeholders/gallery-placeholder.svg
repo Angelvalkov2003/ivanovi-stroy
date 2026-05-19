@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600" role="img" aria-label="!:>@> A=8<:8">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f8f4eb"/>
+      <stop offset="100%" style="stop-color:#ebe5d6"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#d4a84a"/>
+      <stop offset="100%" style="stop-color:#c79305"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#bg)"/>
+  <rect x="40" y="40" width="720" height="520" rx="24" fill="none" stroke="#c79305" stroke-width="2" stroke-dasharray="12 8" opacity="0.45"/>
+  <g transform="translate(400 260)">
+    <circle r="72" fill="url(#gold)" opacity="0.15"/>
+    <circle r="56" fill="none" stroke="#c79305" stroke-width="3" opacity="0.5"/>
+    <path d="M-28-8h56v8c0 22-12 40-28 40s-28-18-28-40v-8zm14-32h28c8 0 14 6 14 14v10h-56v-10c0-8 6-14 14-14z" fill="#c79305" opacity="0.85"/>
+    <rect x="-20" y="24" width="40" height="6" rx="3" fill="#c79305" opacity="0.5"/>
+  </g>
+  <text x="400" y="400" text-anchor="middle" font-family="system-ui,Segoe UI,sans-serif" font-size="28" font-weight="700" fill="#141414">!:>@> BC:</text>
+  <text x="400" y="440" text-anchor="middle" font-family="system-ui,Segoe UI,sans-serif" font-size="18" fill="#8f8f8f"> 50;=8 A=8<:8 >B ?@>5:B0</text>
+</svg>

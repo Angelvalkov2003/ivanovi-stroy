@@ -3,6 +3,7 @@ import WidgetWrapper from '~/components/ui/WidgetWrapper.astro';
 import type { CallToAction, Widget } from '~/types';
 import Headline from '~/components/ui/Headline.astro';
 import Button from '~/components/ui/Button.astro';
+import { entranceIntersect } from '~/utils/entrance';
 
 interface Props extends Widget {
   title?: string;
@@ -43,8 +44,8 @@ const {
       actions && (
         <div class="max-w-xs sm:max-w-md m-auto flex flex-nowrap flex-col sm:flex-row sm:justify-center gap-4 mt-6">
           {Array.isArray(actions) ? (
-            actions.map((action) => (
-              <div class="flex w-full sm:w-auto">
+            actions.map((action, index) => (
+              <div class:list={[entranceIntersect(), 'flex w-full sm:w-auto']} style={`--i: ${index}`}>
                 <Button {...(action || {})} class="w-full sm:mb-0" />
               </div>
             ))

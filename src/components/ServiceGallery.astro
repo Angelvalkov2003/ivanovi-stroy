@@ -1,136 +1,371 @@
 ---
 import { Icon } from 'astro-icon/components';
-import { serviceCategories } from '~/data/services';
+import { galleryCategories, getCategoryRealImages } from '~/data/services';
+import { entranceIntersect } from '~/utils/entrance';
+
+interface Props {
+  /** Търсачка вътре в секцията (начална страница). На /services е отделно под „Нашите направления“. */
+  showSearch?: boolean;
+}
+
+const { showSearch = false } = Astro.props;
+
+const albums = galleryCategories.map((cat) => ({
+  id: cat.id,
+  title: cat.title,
+  searchText: [cat.title, cat.teaser, cat.summary, cat.id].filter(Boolean).join(' ').toLowerCase(),
+  images: getCategoryRealImages(cat),
+}));
 ---
 
-<section id="uslugi-galeria" class="py-12 md:py-16 bg-white">
+<section id="uslugi-galeria" class="pt-0 pb-10 md:pb-14 bg-white scroll-mt-20">
   <div class="max-w-7xl mx-auto px-4 sm:px-6">
-    <div class="text-center max-w-3xl mx-auto mb-10">
-      <p class="text-sm font-bold uppercase tracking-wider text-[#c79305] mb-2">Портфолио</p>
-      <h2 class="text-3xl md:text-4xl font-bold text-[#141414] mb-3">Разгледайте нашите услуги</h2>
-      <p class="text-[#8f8f8f]">
-        Изберете категория, за да видите примерни реализации. Натиснете „Гипс картон“ или „Бетон и кофраж“ за подробни
-        снимки.
-      </p>
-    </div>
-
-    <div
-      class="grid grid-cols-2 gap-3 mb-10 max-w-md mx-auto md:max-w-none md:flex md:flex-wrap md:justify-center"
-      role="tablist"
-      aria-label="Категории услуги"
-    >
-      {
-        serviceCategories.map((cat, i) => (
-          <button
-            type="button"
-            role="tab"
-            aria-selected={i === 0}
-            data-service-tab={cat.id}
-            class:list={[
-              'service-tab flex flex-col items-center justify-center gap-1.5 w-full min-h-[4.5rem] px-2 py-3 rounded-xl text-xs leading-tight font-semibold border transition-all duration-200 text-center',
-              'md:min-h-0 md:flex-row md:inline-flex md:w-auto md:rounded-full md:px-4 md:py-2.5 md:text-sm md:gap-2',
-              i === 0
-                ? 'bg-[#c79305] border-[#c79305] text-white shadow-md'
-                : 'bg-white border-[#8f8f8f]/40 text-[#141414] hover:border-[#c79305] hover:text-[#c79305]',
-            ]}
-          >
-            <Icon name={cat.icon} class="w-5 h-5 shrink-0 md:w-4 md:h-4" />
-            <span class="block w-full">{cat.title}</span>
-          </button>
-        ))
-      }
-    </div>
-
     {
-      serviceCategories.map((cat, i) => (
-        <div data-service-panel={cat.id} class:list={['service-panel', i !== 0 && 'hidden']} role="tabpanel">
-          <div class="bg-[#f8f8f8] rounded-2xl p-6 md:p-8 border border-[#8f8f8f]/20">
-            <h3 class="text-2xl font-bold text-[#141414] mb-2">{cat.title}</h3>
-            <p class="text-[#8f8f8f] mb-6 max-w-2xl">{cat.summary}</p>
-
-            {cat.subsections ? (
-              <div class="space-y-10">
-                {cat.subsections.map((sub) => (
-                  <div>
-                    <h4 class="text-lg font-semibold text-[#c79305] mb-4 flex items-center gap-2">
-                      <span class="w-8 h-0.5 bg-[#c79305] rounded" />
-                      {sub.title}
-                    </h4>
-                    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {sub.images.map((img) => (
-                        <figure class="group overflow-hidden rounded-xl shadow-sm border border-[#8f8f8f]/15">
-                          <img
-                            src={img.src}
-                            alt={img.alt}
-                            class="w-full aspect-[4/3] object-cover transition-transform duration-300 group-hover:scale-105"
-                            loading="lazy"
-                            width="400"
-                            height="300"
-                          />
-                          <figcaption class="px-3 py-2 text-sm text-[#8f8f8f] bg-white">{img.alt}</figcaption>
-                        </figure>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {cat.images?.map((img) => (
-                  <figure class="group overflow-hidden rounded-xl shadow-sm border border-[#8f8f8f]/15">
-                    <img
-                      src={img.src}
-                      alt={img.alt}
-                      class="w-full aspect-[4/3] object-cover transition-transform duration-300 group-hover:scale-105"
-                      loading="lazy"
-                      width="400"
-                      height="300"
-                    />
-                    <figcaption class="px-3 py-2 text-sm text-[#8f8f8f] bg-white">{img.alt}</figcaption>
-                  </figure>
-                ))}
-              </div>
-            )}
+      albums.length > 0 ? (
+        <>
+          {showSearch && (
+            <div class="mb-6 max-w-xl">
+            <label for="gallery-search" class="sr-only">Търсене на услуга</label>
+            <div class="relative">
+              <Icon
+                name="tabler:search"
+                class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#8f8f8f]"
+              />
+              <input
+                type="search"
+                id="gallery-search"
+                class="gallery-search-input w-full rounded-xl border border-[#8f8f8f]/30 bg-[#faf8f4] py-3 pl-12 pr-10 text-[#141414] placeholder:text-[#8f8f8f] shadow-sm transition-colors focus:border-[#c79305] focus:outline-none focus:ring-2 focus:ring-[#c79305]/25"
+                placeholder="Търси услуга — боя, плочки, ламинат..."
+                autocomplete="off"
+              />
+              <button
+                type="button"
+                id="gallery-search-clear"
+                class="absolute right-3 top-1/2 -translate-y-1/2 hidden p-1 rounded-full text-[#8f8f8f] hover:text-[#141414] hover:bg-[#8f8f8f]/10"
+                aria-label="Изчисти търсенето"
+              >
+                <Icon name="tabler:x" class="w-4 h-4" />
+              </button>
+            </div>
           </div>
-        </div>
-      ))
+          )}
+
+          <div class="mb-6 md:mb-8">
+            <h2 class:list={[entranceIntersect(), 'text-2xl md:text-3xl font-bold text-[#141414]']}>Галерия</h2>
+          </div>
+
+          <p id="gallery-search-empty" class="hidden text-center text-[#8f8f8f] py-8">
+            Няма намерени услуги. Опитайте с друга дума.
+          </p>
+
+          <div
+            id="gallery-grid"
+            class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4"
+          >
+          {albums.map((album, index) => (
+            <button
+              type="button"
+              class:list={[
+                entranceIntersect(),
+                'gallery-album group text-left rounded-xl overflow-hidden border border-[#8f8f8f]/15 bg-white shadow-sm hover:shadow-md hover:border-[#c79305]/40 transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#c79305]',
+              ]}
+              style={`--i: ${index}`}
+              data-gallery-open={album.id}
+              data-gallery-search={album.searchText}
+              aria-label={`Отвори снимки: ${album.title}`}
+            >
+              <div class="aspect-square overflow-hidden bg-[#f0ebe0]">
+                <img
+                  src={album.images[0].src}
+                  alt={album.title}
+                  class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  loading="lazy"
+                  width="400"
+                  height="400"
+                />
+              </div>
+              <div class="px-2.5 py-2.5 sm:px-3 sm:py-3 border-t border-[#8f8f8f]/10">
+                <h3 class="text-xs sm:text-sm font-bold text-[#141414] leading-snug text-center">{album.title}</h3>
+                {album.images.length > 1 && (
+                  <p class="text-[10px] sm:text-xs text-[#8f8f8f] text-center mt-0.5">
+                    {album.images.length} снимки
+                  </p>
+                )}
+              </div>
+            </button>
+          ))}
+          </div>
+        </>
+      ) : (
+        <p class="text-center text-[#8f8f8f]">Скоро ще добавим снимки от обектите ни.</p>
+      )
     }
+  </div>
+
+  <div
+    id="gallery-modal"
+    class="gallery-modal fixed inset-0 z-[100] hidden"
+    role="dialog"
+    aria-modal="true"
+    aria-hidden="true"
+    aria-label="Галерия снимки"
+  >
+    <div class="absolute inset-0 bg-[#141414]/90 backdrop-blur-md" data-gallery-backdrop />
+
+    <button
+      type="button"
+      id="gallery-close"
+      class="absolute top-4 right-4 z-20 p-2.5 rounded-full bg-white/10 text-white hover:bg-[#c79305] transition-colors"
+      aria-label="Затвори"
+    >
+      <Icon name="tabler:x" class="w-7 h-7" />
+    </button>
+
+    <button
+      type="button"
+      id="gallery-prev"
+      class="gallery-nav absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-20 p-2 sm:p-3 rounded-full bg-white/10 text-white hover:bg-[#c79305] transition-colors disabled:opacity-30 disabled:pointer-events-none"
+      aria-label="Предишна снимка"
+    >
+      <Icon name="tabler:chevron-left" class="w-8 h-8" />
+    </button>
+
+    <button
+      type="button"
+      id="gallery-next"
+      class="gallery-nav absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-20 p-2 sm:p-3 rounded-full bg-white/10 text-white hover:bg-[#c79305] transition-colors disabled:opacity-30 disabled:pointer-events-none"
+      aria-label="Следваща снимка"
+    >
+      <Icon name="tabler:chevron-right" class="w-8 h-8" />
+    </button>
+
+    <div class="relative z-10 flex flex-col md:flex-row items-stretch justify-center gap-4 md:gap-6 w-full h-full max-w-6xl mx-auto px-4 pt-16 pb-6 sm:px-12 sm:pt-20">
+      <div class="flex-1 flex flex-col min-h-0 min-w-0">
+        <h2 id="gallery-title" class="text-lg sm:text-xl font-bold text-white text-center md:text-left mb-3 shrink-0" />
+        <div class="flex-1 flex items-center justify-center min-h-[40vh] md:min-h-0">
+          <img
+            id="gallery-main"
+            src=""
+            alt=""
+            class="max-w-full max-h-[55vh] md:max-h-[calc(100vh-8rem)] object-contain rounded-lg shadow-2xl"
+          />
+        </div>
+      </div>
+
+      <aside
+        id="gallery-thumbs"
+        class="gallery-thumbs shrink-0 flex md:flex-col gap-2 overflow-x-auto md:overflow-y-auto md:overflow-x-hidden md:w-28 lg:w-32 max-h-28 md:max-h-[calc(100vh-8rem)] pb-1 md:pb-0 md:pt-8"
+        aria-label="Миниатюри"
+      />
+    </div>
   </div>
 </section>
 
-<script>
+<script define:vars={{ albums }}>
   function initServiceGallery() {
-    const tabs = document.querySelectorAll('[data-service-tab]');
-    const panels = document.querySelectorAll('[data-service-panel]');
-    if (!tabs.length) return;
+    const modal = document.getElementById('gallery-modal');
+    const backdrop = document.querySelector('[data-gallery-backdrop]');
+    const closeBtn = document.getElementById('gallery-close');
+    const prevBtn = document.getElementById('gallery-prev');
+    const nextBtn = document.getElementById('gallery-next');
+    const mainImg = document.getElementById('gallery-main');
+    const titleEl = document.getElementById('gallery-title');
+    const thumbsEl = document.getElementById('gallery-thumbs');
+    const gallerySection = document.getElementById('uslugi-galeria');
 
-    tabs.forEach((tab) => {
-      tab.addEventListener('click', () => {
-        const id = tab.getAttribute('data-service-tab');
-        tabs.forEach((t) => {
-          const active = t === tab;
-          t.setAttribute('aria-selected', String(active));
-          t.classList.toggle('bg-[#c79305]', active);
-          t.classList.toggle('border-[#c79305]', active);
-          t.classList.toggle('text-white', active);
-          t.classList.toggle('shadow-md', active);
-          t.classList.toggle('bg-white', !active);
-          t.classList.toggle('border-[#8f8f8f]/40', !active);
-          t.classList.toggle('text-[#141414]', !active);
+    const searchInput = document.getElementById('gallery-search');
+    const searchClear = document.getElementById('gallery-search-clear');
+    const searchEmpty = document.getElementById('gallery-search-empty');
+    const galleryGrid = document.getElementById('gallery-grid');
+
+    if (!modal || !mainImg || !titleEl || !thumbsEl) return;
+
+    if (window.__galleryAbort) window.__galleryAbort.abort();
+    window.__galleryAbort = new AbortController();
+    const { signal } = window.__galleryAbort;
+
+    const albumIds = new Set(albums.map((a) => a.id));
+    let albumId = albums[0].id;
+    let index = 0;
+
+    const getAlbum = () => albums.find((a) => a.id === albumId);
+
+    const render = () => {
+      const album = getAlbum();
+      if (!album?.images.length) return;
+
+      if (index >= album.images.length) index = 0;
+      if (index < 0) index = album.images.length - 1;
+
+      const current = album.images[index];
+      mainImg.src = current.src;
+      mainImg.alt = current.alt;
+      titleEl.textContent = album.title;
+
+      const multi = album.images.length > 1;
+      prevBtn.disabled = !multi;
+      nextBtn.disabled = !multi;
+      prevBtn.classList.toggle('hidden', !multi);
+      nextBtn.classList.toggle('hidden', !multi);
+      thumbsEl.classList.toggle('hidden', !multi);
+
+      thumbsEl.innerHTML = '';
+      album.images.forEach((img, i) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = [
+          'gallery-thumb shrink-0 w-16 h-16 md:w-full md:aspect-square rounded-lg overflow-hidden border-2 transition-all',
+          i === index ? 'border-[#c79305] ring-2 ring-[#c79305]/40 opacity-100' : 'border-transparent opacity-60 hover:opacity-100',
+        ].join(' ');
+        btn.setAttribute('aria-label', `Снимка ${i + 1}`);
+        btn.setAttribute('aria-current', i === index ? 'true' : 'false');
+        const thumb = document.createElement('img');
+        thumb.src = img.src;
+        thumb.alt = '';
+        thumb.className = 'w-full h-full object-cover';
+        btn.appendChild(thumb);
+        btn.addEventListener('click', () => {
+          index = i;
+          render();
         });
-        panels.forEach((p) => {
-          p.classList.toggle('hidden', p.getAttribute('data-service-panel') !== id);
-        });
+        thumbsEl.appendChild(btn);
+      });
+    };
+
+    const open = (id, startIndex = 0, scrollToGallery = false) => {
+      const album = albums.find((a) => a.id === id);
+      if (!album) return;
+      albumId = id;
+      index = startIndex;
+      render();
+      modal.classList.remove('hidden');
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+      history.replaceState?.(null, '', `#${id}`);
+      if (scrollToGallery) {
+        gallerySection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    };
+
+    const close = () => {
+      modal.classList.add('hidden');
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+      mainImg.src = '';
+      if (location.hash) {
+        history.replaceState?.(null, '', `${location.pathname}${location.search}`);
+      }
+    };
+
+    const openFromHash = (scrollToGrid = false) => {
+      const hash = window.location.hash.replace('#', '');
+      if (!hash || !albumIds.has(hash)) return false;
+      open(hash, 0, scrollToGrid);
+      return true;
+    };
+
+    document.querySelectorAll('[data-gallery-open]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const id = btn.getAttribute('data-gallery-open');
+        if (id) open(id, 0);
       });
     });
 
-    const hash = window.location.hash.replace('#', '');
-    if (hash) {
-      const target = document.querySelector(`[data-service-tab="${hash}"]`);
-      target?.click();
-    }
+    document.addEventListener(
+      'click',
+      (e) => {
+        const link = e.target.closest?.('a[href*="#"]');
+        if (!link) return;
+        const raw = link.getAttribute('href') ?? '';
+        const hashIndex = raw.indexOf('#');
+        if (hashIndex === -1) return;
+        const id = raw.slice(hashIndex + 1);
+        if (!id || !albumIds.has(id)) return;
+        const onServicesPage = window.location.pathname.replace(/\/$/, '').endsWith('/services');
+        if (!onServicesPage) return;
+        e.preventDefault();
+        open(id, 0, true);
+      },
+      { signal }
+    );
+
+    window.addEventListener(
+      'hashchange',
+      () => {
+        openFromHash(true);
+      },
+      { signal }
+    );
+
+    closeBtn?.addEventListener('click', close);
+    backdrop?.addEventListener('click', close);
+
+    prevBtn?.addEventListener('click', () => {
+      index -= 1;
+      render();
+    });
+    nextBtn?.addEventListener('click', () => {
+      index += 1;
+      render();
+    });
+
+    document.addEventListener(
+      'keydown',
+      (e) => {
+        if (modal.classList.contains('hidden')) return;
+        if (e.key === 'Escape') close();
+        if (e.key === 'ArrowLeft') {
+          index -= 1;
+          render();
+        }
+        if (e.key === 'ArrowRight') {
+          index += 1;
+          render();
+        }
+      },
+      { signal }
+    );
+
+    const filterGallery = () => {
+      const query = (searchInput?.value ?? '').trim().toLowerCase();
+      const cards = document.querySelectorAll('.gallery-album');
+      let visible = 0;
+
+      cards.forEach((card) => {
+        const haystack = card.getAttribute('data-gallery-search') ?? '';
+        const match = !query || haystack.includes(query);
+        card.classList.toggle('hidden', !match);
+        if (match) visible += 1;
+      });
+
+      searchClear?.classList.toggle('hidden', !query);
+      searchEmpty?.classList.toggle('hidden', visible > 0);
+      galleryGrid?.classList.toggle('hidden', visible === 0);
+    };
+
+    searchInput?.addEventListener('input', filterGallery, { signal });
+    searchClear?.addEventListener(
+      'click',
+      () => {
+        if (searchInput) {
+          searchInput.value = '';
+          searchInput.focus();
+        }
+        filterGallery();
+      },
+      { signal }
+    );
+
+    openFromHash();
   }
 
   initServiceGallery();
   document.addEventListener('astro:page-load', initServiceGallery);
 </script>
+
+<style>
+  .gallery-thumbs {
+    scrollbar-width: thin;
+    scrollbar-color: #c79305 transparent;
+  }
+</style>

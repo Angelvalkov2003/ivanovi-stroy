@@ -7,6 +7,7 @@ import ServiceGallery from '~/components/ServiceGallery.astro';
 import ContactButtons from '~/components/ContactButtons.astro';
 import { SITE_BRAND, SITE_CONTACT } from '~/data/site';
 import { mainServices, whyChooseUs } from '~/data/services';
+import { entranceIntersect, entranceLoad } from '~/utils/entrance';
 
 const metadata = {
   title: 'Строителна фирма София — Кърти, Чисти, Извозва',
@@ -17,6 +18,7 @@ const metadata = {
 
 <Layout metadata={metadata}>
   <Hero
+    animated
     actions={[
       {
         variant: 'primary',
@@ -26,12 +28,20 @@ const metadata = {
       },
       { text: 'Виж услугите', href: '/services' },
     ]}
-    image={{ src: '/logo.jpg', alt: `${SITE_BRAND.name} лого` }}
+    image={{ src: '/mainpic1.png', alt: SITE_BRAND.name }}
   >
     <Fragment slot="title">
-      <span class="text-[#c79305]">{SITE_BRAND.tagline}</span>
-      <br />
-      <span class="text-[#141414]">{SITE_BRAND.name}</span>
+      <span
+        class:list={[
+          entranceLoad(0),
+          'block text-[#c79305] text-sm sm:text-2xl md:text-3xl font-bold tracking-tight whitespace-nowrap',
+        ]}
+      >
+        {SITE_BRAND.tagline}
+      </span>
+      <span class:list={[entranceLoad(1), 'block text-[#141414] text-4xl sm:text-5xl md:text-6xl mt-1']}>
+        {SITE_BRAND.name}
+      </span>
     </Fragment>
     <Fragment slot="subtitle">
       Строителна фирма в <strong>София и областта</strong> — къртене, почистване, извозване, кофраж, бетон, ВиК, ЕЛ и
@@ -39,7 +49,7 @@ const metadata = {
     </Fragment>
   </Hero>
 
-  <section class="bg-gradient-to-b from-[#c79305]/10 to-white py-6">
+  <section class:list={[entranceIntersect(), 'bg-gradient-to-b from-[#c79305]/10 to-white py-6']}>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col items-center gap-3">
       <ContactButtons />
       <p class="text-center text-[#8f8f8f] text-sm font-medium">Работа без почивен ден</p>
@@ -69,8 +79,8 @@ const metadata = {
       icon: 'tabler:circle-check-filled',
     }))}
     image={{
-      src: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=1200&q=80',
-      alt: 'Строителни услуги София',
+      src: '/mainpic2.png',
+      alt: 'Строителна фирма София',
     }}
   >
     <Fragment slot="content">
@@ -86,14 +96,18 @@ const metadata = {
 
   <ServiceGallery />
 
-  <section class="py-16 md:py-20 bg-[#121212] text-white">
+  <section class:list={[entranceIntersect(), 'py-16 md:py-20 bg-[#121212] text-white']}>
     <div class="max-w-3xl mx-auto px-4 text-center">
-      <h2 class="text-3xl md:text-4xl font-bold mb-3">Готови сте за вашия проект?</h2>
-      <p class="text-[#8f8f8f] mb-8">
+      <h2 class:list={[entranceIntersect(), 'text-3xl md:text-4xl font-bold mb-3']} style="--i: 0">
+        Готови сте за вашия проект?
+      </h2>
+      <p class:list={[entranceIntersect(), 'text-[#8f8f8f] mb-8']} style="--i: 1">
         Обадете се на <strong class="text-white">{SITE_CONTACT.phoneIntl}</strong> — отговаряме бързо, работим в София
         и областта.
       </p>
-      <ContactButtons />
+      <div class:list={[entranceIntersect(), 'flex justify-center']} style="--i: 2">
+        <ContactButtons />
+      </div>
     </div>
   </section>
 </Layout>

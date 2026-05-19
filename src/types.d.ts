@@ -122,6 +122,12 @@ export interface Item {
   classes?: Record<string, string>;
   callToAction?: CallToAction;
   image?: Image;
+  /** When set, the entire card becomes a link (no nested anchors in description). */
+  href?: string;
+  linkTarget?: string;
+  linkRel?: string;
+  /** Lowercase haystack for client-side card filtering (e.g. services search). */
+  searchText?: string;
 }
 
 export interface Price {

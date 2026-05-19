@@ -37,6 +37,7 @@ const metadata = {
       title: cat.title,
       description: cat.summary,
       icon: cat.icon,
+      searchText: [cat.title, cat.summary, cat.id].join(' ').toLowerCase(),
       callToAction: hasRealPhotos(cat)
         ? {
             text: 'Виж галерия',
@@ -46,7 +47,7 @@ const metadata = {
         : undefined,
     }))}
   >
-    <GallerySearch slot="afterSubtitle" />
+    <GallerySearch slot="afterSubtitle" totalCount={serviceCategories.length} />
   </Features2>
 
   <ServiceGallery />

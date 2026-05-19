@@ -1,28 +1,131 @@
 ---
 import { Icon } from 'astro-icon/components';
+
+interface Props {
+  /** Total service direction cards (for "X услуги" hint). */
+  totalCount?: number;
+}
+
+const { totalCount } = Astro.props;
+const countHint =
+  totalCount !== undefined
+    ? `${totalCount} ${totalCount === 1 ? 'услуга' : 'услуги'}`
+    : null;
 ---
 
-<div class="max-w-xl" aria-label="Търсене в галерията">
-  <label for="gallery-search" class="sr-only">Търсене на услуга</label>
-  <div class="relative">
-    <Icon
-      name="tabler:search"
-      class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#8f8f8f]"
-    />
+<div class="gallery-search w-full" aria-label="Търсене в направленията">
+  <label for="gallery-search" class="sr-only">Търсене на направление</label>
+
+  <div class="relative group">
+    <span
+      class="pointer-events-none absolute left-5 top-1/2 z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-[#c79305]/12 text-[#c79305] transition-colors group-focus-within:bg-[#c79305]/20"
+      aria-hidden="true"
+    >
+      <Icon name="tabler:search" class="h-[1.125rem] w-[1.125rem]" />
+    </span>
+
     <input
-      type="search"
+      type="text"
       id="gallery-search"
-      class="gallery-search-input w-full rounded-xl border border-[#8f8f8f]/30 bg-[#faf8f4] py-3 pl-12 pr-10 text-[#141414] placeholder:text-[#8f8f8f] shadow-sm transition-colors focus:border-[#c79305] focus:outline-none focus:ring-2 focus:ring-[#c79305]/25"
-      placeholder="Търси услуга — боя, плочки, ламинат..."
+      class="gallery-search-input w-full rounded-full border-2 border-[#8f8f8f]/25 bg-[#faf8f4] py-3.5 pl-16 pr-14 text-base text-[#141414] shadow-[0_4px_24px_rgba(20,20,20,0.06)] placeholder:text-[#8f8f8f]/90 transition-[border-color,box-shadow] duration-200 focus:border-[#c79305] focus:outline-none focus:shadow-[0_6px_28px_rgba(199,147,5,0.18)] focus:ring-0"
+      placeholder="Търси услуга — боя, плочки, ламинат, ВиК..."
       autocomplete="off"
+      enterkeyhint="search"
+      spellcheck="false"
     />
+
     <button
       type="button"
       id="gallery-search-clear"
-      class="absolute right-3 top-1/2 -translate-y-1/2 hidden p-1 rounded-full text-[#8f8f8f] hover:text-[#141414] hover:bg-[#8f8f8f]/10"
+      class="absolute right-3 top-1/2 z-10 hidden -translate-y-1/2 items-center justify-center rounded-full bg-[#141414]/8 p-2 text-[#8f8f8f] transition-colors hover:bg-[#c79305]/15 hover:text-[#141414]"
       aria-label="Изчисти търсенето"
     >
-      <Icon name="tabler:x" class="w-4 h-4" />
+      <Icon name="tabler:x" class="h-4 w-4" />
     </button>
   </div>
+
+  <p
+    id="gallery-search-meta"
+    class="mt-2.5 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-sm text-[#8f8f8f] md:justify-start"
+    aria-live="polite"
+  >
+    {
+      countHint && (
+        <span id="gallery-search-total" class="text-[#8f8f8f]">
+          {countHint}
+        </span>
+      )
+    }
+    <span id="gallery-search-count" class="hidden font-medium text-[#c79305]" />
+  </p>
 </div>
+
+<script>
+  function initGallerySearch() {
+    const searchInput = document.getElementById('gallery-search');
+    const searchClear = document.getElementById('gallery-search-clear');
+    const searchEmpty = document.getElementById('service-search-empty');
+    const searchCount = document.getElementById('gallery-search-count');
+    const searchTotal = document.getElementById('gallery-search-total');
+    const directionsGrid = document.getElementById('service-directions-grid');
+
+    if (!searchInput || !directionsGrid) return;
+
+    if (window.__gallerySearchAbort) window.__gallerySearchAbort.abort();
+    window.__gallerySearchAbort = new AbortController();
+    const { signal } = window.__gallerySearchAbort;
+
+    const getCards = () => directionsGrid.querySelectorAll('.service-direction-card');
+
+    const formatCount = (n: number) => {
+      if (n === 0) return 'Няма намерени направления';
+      if (n === 1) return '1 намерено направление';
+      return `${n} намерени направления`;
+    };
+
+    const filterDirections = () => {
+      const query = searchInput.value.trim().toLowerCase();
+      const cards = getCards();
+      let visible = 0;
+
+      cards.forEach((card) => {
+        const haystack = card.getAttribute('data-service-search') ?? '';
+        const match = !query || haystack.includes(query);
+        card.classList.toggle('hidden', !match);
+        if (match) visible += 1;
+      });
+
+      searchClear?.classList.toggle('hidden', !query);
+      searchEmpty?.classList.toggle('hidden', visible > 0);
+      directionsGrid.classList.toggle('hidden', visible === 0 && !!query);
+
+      if (searchCount) {
+        if (query) {
+          searchCount.textContent = formatCount(visible);
+          searchCount.classList.remove('hidden');
+          searchTotal?.classList.add('hidden');
+        } else {
+          searchCount.classList.add('hidden');
+          searchCount.textContent = '';
+          searchTotal?.classList.remove('hidden');
+        }
+      }
+    };
+
+    searchInput.addEventListener('input', filterDirections, { signal });
+    searchClear?.addEventListener(
+      'click',
+      () => {
+        searchInput.value = '';
+        searchInput.focus();
+        filterDirections();
+      },
+      { signal }
+    );
+
+    filterDirections();
+  }
+
+  initGallerySearch();
+  document.addEventListener('astro:page-load', initGallerySearch);
+</script>

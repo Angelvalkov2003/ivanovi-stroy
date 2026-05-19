@@ -22,28 +22,37 @@ const metadata = {
     items={[
       {
         title: 'Телефон',
-        description: `<a href="tel:${SITE_CONTACT.phoneTel}" class="text-[#c79305] font-bold text-xl">${SITE_CONTACT.phone}</a>`,
+        description: `<span class="text-[#c79305] font-bold text-xl">${SITE_CONTACT.phone}</span>`,
         icon: 'tabler:phone',
+        href: `tel:${SITE_CONTACT.phoneTel}`,
       },
       {
         title: 'WhatsApp',
-        description: `<a href="${SITE_CONTACT.whatsapp}" target="_blank" rel="noopener" class="text-[#c79305] hover:underline">Пишете в WhatsApp</a>`,
+        description: '<span class="text-[#c79305]">Пишете в WhatsApp</span>',
         icon: 'tabler:brand-whatsapp',
+        href: SITE_CONTACT.whatsapp,
+        linkTarget: '_blank',
+        linkRel: 'noopener noreferrer',
       },
       {
         title: 'Viber',
-        description: `<a href="${SITE_CONTACT.viber}" class="text-[#c79305] hover:underline">Пишете в Viber</a>`,
+        description: '<span class="text-[#c79305]">Пишете в Viber</span>',
         icon: 'tabler:message-circle',
+        href: SITE_CONTACT.viber,
       },
       {
         title: 'Имейл',
-        description: `<a href="mailto:${SITE_CONTACT.email}" class="text-[#c79305] hover:underline">${SITE_CONTACT.email}</a>`,
+        description: `<span class="text-[#c79305]">${SITE_CONTACT.email}</span>`,
         icon: 'tabler:mail',
+        href: `mailto:${SITE_CONTACT.email}`,
       },
       {
         title: 'Локация',
         description: SITE_CONTACT.location,
         icon: 'tabler:map-pin',
+        href: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(SITE_CONTACT.location)}`,
+        linkTarget: '_blank',
+        linkRel: 'noopener noreferrer',
       },
       {
         title: 'Работно време',

@@ -3,13 +3,6 @@ import { Icon } from 'astro-icon/components';
 import { galleryCategories, getCategoryRealImages } from '~/data/services';
 import { entranceIntersect } from '~/utils/entrance';
 
-interface Props {
-  /** Търсачка вътре в секцията (начална страница). На /services е отделно под „Нашите направления“. */
-  showSearch?: boolean;
-}
-
-const { showSearch = false } = Astro.props;
-
 const albums = galleryCategories.map((cat) => ({
   id: cat.id,
   title: cat.title,
@@ -23,40 +16,9 @@ const albums = galleryCategories.map((cat) => ({
     {
       albums.length > 0 ? (
         <>
-          {showSearch && (
-            <div class="mb-6 max-w-xl">
-            <label for="gallery-search" class="sr-only">Търсене на услуга</label>
-            <div class="relative">
-              <Icon
-                name="tabler:search"
-                class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#8f8f8f]"
-              />
-              <input
-                type="search"
-                id="gallery-search"
-                class="gallery-search-input w-full rounded-xl border border-[#8f8f8f]/30 bg-[#faf8f4] py-3 pl-12 pr-10 text-[#141414] placeholder:text-[#8f8f8f] shadow-sm transition-colors focus:border-[#c79305] focus:outline-none focus:ring-2 focus:ring-[#c79305]/25"
-                placeholder="Търси услуга — боя, плочки, ламинат..."
-                autocomplete="off"
-              />
-              <button
-                type="button"
-                id="gallery-search-clear"
-                class="absolute right-3 top-1/2 -translate-y-1/2 hidden p-1 rounded-full text-[#8f8f8f] hover:text-[#141414] hover:bg-[#8f8f8f]/10"
-                aria-label="Изчисти търсенето"
-              >
-                <Icon name="tabler:x" class="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-          )}
-
           <div class="mb-6 md:mb-8">
             <h2 class:list={[entranceIntersect(), 'text-2xl md:text-3xl font-bold text-[#141414]']}>Галерия</h2>
           </div>
-
-          <p id="gallery-search-empty" class="hidden text-center text-[#8f8f8f] py-8">
-            Няма намерени услуги. Опитайте с друга дума.
-          </p>
 
           <div
             id="gallery-grid"
@@ -172,11 +134,6 @@ const albums = galleryCategories.map((cat) => ({
     const titleEl = document.getElementById('gallery-title');
     const thumbsEl = document.getElementById('gallery-thumbs');
     const gallerySection = document.getElementById('uslugi-galeria');
-
-    const searchInput = document.getElementById('gallery-search');
-    const searchClear = document.getElementById('gallery-search-clear');
-    const searchEmpty = document.getElementById('gallery-search-empty');
-    const galleryGrid = document.getElementById('gallery-grid');
 
     if (!modal || !mainImg || !titleEl || !thumbsEl) return;
 
@@ -322,36 +279,6 @@ const albums = galleryCategories.map((cat) => ({
           index += 1;
           render();
         }
-      },
-      { signal }
-    );
-
-    const filterGallery = () => {
-      const query = (searchInput?.value ?? '').trim().toLowerCase();
-      const cards = document.querySelectorAll('.gallery-album');
-      let visible = 0;
-
-      cards.forEach((card) => {
-        const haystack = card.getAttribute('data-gallery-search') ?? '';
-        const match = !query || haystack.includes(query);
-        card.classList.toggle('hidden', !match);
-        if (match) visible += 1;
-      });
-
-      searchClear?.classList.toggle('hidden', !query);
-      searchEmpty?.classList.toggle('hidden', visible > 0);
-      galleryGrid?.classList.toggle('hidden', visible === 0);
-    };
-
-    searchInput?.addEventListener('input', filterGallery, { signal });
-    searchClear?.addEventListener(
-      'click',
-      () => {
-        if (searchInput) {
-          searchInput.value = '';
-          searchInput.focus();
-        }
-        filterGallery();
       },
       { signal }
     );

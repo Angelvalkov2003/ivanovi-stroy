@@ -21,6 +21,7 @@ const {
 } = Astro.props;
 
 const hasAfterSubtitle = Astro.slots.has('afterSubtitle');
+const hasSearchableItems = items.some((item) => item.searchText);
 
 const columnsClass =
   columns === 4
@@ -47,7 +48,7 @@ const columnsClass =
 
   {
     hasAfterSubtitle && (
-      <div class="mt-2 mb-8 md:mb-10 max-w-xl mx-auto md:mx-0">
+      <div class="mt-2 mb-8 md:mb-10 w-full max-w-3xl mx-auto">
         <slot name="afterSubtitle" />
       </div>
     )
@@ -55,26 +56,62 @@ const columnsClass =
 
   {
     items.length > 0 && (
-      <div class:list={['grid gap-4 md:gap-6 gap-x-12', columnsClass]}>
-        {items.map(({ title: itemTitle, description, icon, callToAction }, index) => (
-          <div
-            class:list={[
+      <>
+        <p
+          id="service-search-empty"
+          class:list={['hidden text-center text-[#8f8f8f] py-6', !hasSearchableItems && '!hidden']}
+        >
+          Няма намерени направления. Опитайте с друга дума.
+        </p>
+        <div
+          id={hasSearchableItems ? 'service-directions-grid' : undefined}
+          class:list={['grid gap-4 md:gap-6 gap-x-12', columnsClass]}
+        >
+        {items.map(
+          ({ title: itemTitle, description, icon, callToAction, href, linkTarget, linkRel, searchText }, index) => {
+            const cardClasses = [
               entranceIntersect(),
+              searchText && 'service-direction-card',
               'intersect-no-queue relative flex flex-col rounded-lg shadow-[0_4px_30px_rgba(0,0,0,0.1)] dark:shadow-[0_4px_30px_rgba(0,0,0,0.1)] backdrop-blur border border-[#ffffff29] bg-white dark:bg-slate-900 p-6',
-            ]}
-            style={`--i: ${index}`}
-          >
-            {(icon || defaultIcon) && <Icon name={icon || defaultIcon} class="mb-6 w-12 h-12 text-primary" />}
-            <div class="text-xl font-bold">{itemTitle}</div>
-            {description && <p class="text-muted mt-2" set:html={description} />}
-            {callToAction && (
-              <div class="mt-2">
-                <Button {...callToAction} />
+              href &&
+                'no-underline text-inherit cursor-pointer transition hover:border-[#c79305]/40 hover:shadow-[0_8px_40px_rgba(199,147,5,0.15)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#c79305]',
+            ];
+            const cardStyle = `--i: ${index}`;
+
+            const cardContent = (
+              <>
+                {(icon || defaultIcon) && <Icon name={icon || defaultIcon} class="mb-6 w-12 h-12 text-primary" />}
+                <div class="text-xl font-bold">{itemTitle}</div>
+                {description && <p class="text-muted mt-2" set:html={description} />}
+                {callToAction && (
+                  <div class="mt-2">
+                    <Button {...callToAction} />
+                  </div>
+                )}
+              </>
+            );
+
+            return href ? (
+              <a
+                href={href}
+                target={linkTarget}
+                rel={linkRel}
+                class:list={cardClasses}
+                style={cardStyle}
+                aria-label={itemTitle}
+                data-service-search={searchText}
+              >
+                {cardContent}
+              </a>
+            ) : (
+              <div class:list={cardClasses} style={cardStyle} data-service-search={searchText}>
+                {cardContent}
               </div>
-            )}
-          </div>
-        ))}
-      </div>
+            );
+          }
+        )}
+        </div>
+      </>
     )
   }
 </WidgetWrapper>

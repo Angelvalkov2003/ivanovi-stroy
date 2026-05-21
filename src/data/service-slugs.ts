@@ -1,0 +1,21 @@
+/** BG SEO URL slugs за /uslugi/[slug] */
+export const SERVICE_SLUGS: Record<string, string> = {
+  demolition: 'kurtane-izvozvane-sofia',
+  gips: 'gips-karton-sofia',
+  zamaski: 'zamaski-sofia',
+  shpaklovka: 'shpaklovka-sofia',
+  boya: 'boyadisvane-sofia',
+  mazilka: 'mazilki-sofia',
+  laminat: 'laminat-sofia',
+  parket: 'parket-sofia',
+  plochki: 'plochki-banya-sofia',
+  zid: 'zidarstvo-sofia',
+  kamyk: 'dekorativen-kamak-sofia',
+  komin: 'kamini-komini-sofia',
+  izolacia: 'izolacia-sofia',
+  beton: 'kofrazh-beton-sofia',
+  pokrivi: 'pokrivi-sofia',
+  keremidi: 'keremidi-sofia',
+  'vik-el': 'vik-el-uslugi-sofia',
+  grub: 'grub-stroezh-sofia',
+};

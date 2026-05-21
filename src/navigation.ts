@@ -1,5 +1,6 @@
 import { getPermalink } from './utils/permalinks';
 import { SITE_CONTACT, SITE_BRAND } from './data/site';
+import { serviceCategories } from './data/services';
 
 export const headerData = {
   links: [
@@ -22,15 +23,10 @@ export const footerData = {
   links: [
     {
       title: 'Услуги',
-      links: [
-        { text: 'Къртене и извозване', href: getPermalink('/services#demolition') },
-        { text: 'Гипс картон', href: getPermalink('/services#gips') },
-        { text: 'Боя и шпакловка', href: getPermalink('/services#boya') },
-        { text: 'Плочки и баня', href: getPermalink('/services#plochki') },
-        { text: 'Кофраж и бетон', href: getPermalink('/services#beton') },
-        { text: 'Покриви', href: getPermalink('/services#pokrivi') },
-        { text: 'ВиК и ЕЛ', href: getPermalink('/services#vik-el') },
-      ],
+      links: serviceCategories.slice(0, 7).map((cat) => ({
+        text: cat.title,
+        href: getPermalink(`/uslugi/${cat.slug}`),
+      })),
     },
     {
       title: 'Компания',

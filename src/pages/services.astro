@@ -5,7 +5,8 @@ import ServiceGallery from '~/components/ServiceGallery.astro';
 import GallerySearch from '~/components/GallerySearch.astro';
 import Features2 from '~/components/widgets/Features2.astro';
 import CallToAction from '~/components/widgets/CallToAction.astro';
-import { serviceCategories, hasRealPhotos } from '~/data/services';
+import { serviceCategories } from '~/data/services';
+import { getPermalink } from '~/utils/permalinks';
 import { entranceIntersect } from '~/utils/entrance';
 import { SITE_BRAND, SITE_CONTACT } from '~/data/site';
 
@@ -23,7 +24,7 @@ const metadata = {
     <div class="max-w-3xl mx-auto px-4 text-center text-[#8f8f8f]">
       <p>
         {SITE_BRAND.name} предлага пълен спектър строителни и ремонтни дейности — от груб строеж до баня до ключ.
-        Натиснете квадратче със снимка по-долу, за да разгледате обектите ни.
+        Изберете услуга и натиснете „Виж услуга“ за подробности, снимки и оферта.
       </p>
     </div>
   </section>
@@ -38,13 +39,10 @@ const metadata = {
       description: cat.summary,
       icon: cat.icon,
       searchText: [cat.title, cat.summary, cat.id].join(' ').toLowerCase(),
-      callToAction: hasRealPhotos(cat)
-        ? {
-            text: 'Виж галерия',
-            href: `#${cat.id}`,
-            class: 'gallery-open-link',
-          }
-        : undefined,
+      callToAction: {
+        text: 'Виж услуга',
+        href: getPermalink(`/uslugi/${cat.slug}`),
+      },
     }))}
   >
     <GallerySearch slot="afterSubtitle" totalCount={serviceCategories.length} />

@@ -7,6 +7,7 @@ import Button from '~/components/ui/Button.astro';
 
 import { getHomePermalink } from '~/utils/permalinks';
 import { trimSlash, getAsset } from '~/utils/permalinks';
+import { isNavLinkActive, navLinkActiveClass } from '~/utils/nav-active';
 import type { CallToAction } from '~/types';
 
 interface Link {
@@ -83,7 +84,7 @@ const gridCols =
             ))
           ) : null
         }
-        <ToggleMenu />
+        <ToggleMenu class="flex flex-col h-11 w-11 rounded-lg justify-center items-center cursor-pointer text-white group" />
       </div>
     </div>
 
@@ -112,7 +113,7 @@ const gridCols =
                         <a
                           class:list={[
                             'first:rounded-t last:rounded-b md:hover:bg-gray-100 hover:text-link dark:hover:text-white dark:hover:bg-gray-700 py-2 px-5 block whitespace-no-wrap',
-                            { 'aw-link-active': href2 === currentPath },
+                            isNavLinkActive(href2, currentPath) && navLinkActiveClass,
                           ]}
                           href={href2}
                         >
@@ -125,10 +126,11 @@ const gridCols =
               ) : (
                 <a
                   class:list={[
-                    'hover:text-link dark:hover:text-white px-3 lg:px-4 py-3 flex items-center whitespace-nowrap',
-                    { 'aw-link-active': href === currentPath },
+                    'hover:text-[#c79305] px-3 lg:px-4 py-3 flex items-center whitespace-nowrap transition-colors',
+                    isNavLinkActive(href, currentPath, text) ? navLinkActiveClass : 'text-white',
                   ]}
                   href={href}
+                  aria-current={isNavLinkActive(href, currentPath, text) ? 'page' : undefined}
                 >
                   {text}
                 </a>
@@ -141,10 +143,7 @@ const gridCols =
 
     <div
       data-aw-header-actions
-      class:list={[
-        'hidden md:flex items-center shrink-0 md:justify-self-end',
-        'max-md:fixed max-md:left-0 max-md:right-0 max-md:bottom-0 max-md:p-3 max-md:bg-[#121212] max-md:border-t max-md:border-[#c79305]/20',
-      ]}
+      class="hidden md:flex items-center shrink-0 md:justify-self-end"
     >
       <div class="items-center flex justify-end w-full md:w-auto gap-2">
         <div class="flex">
@@ -178,4 +177,87 @@ const gridCols =
       </div>
     </div>
   </div>
+
+  <div
+    id="mobile-menu-backdrop"
+    class="mobile-menu-backdrop md:hidden"
+    aria-hidden="true"
+    data-mobile-menu-backdrop
+  />
+
+  <aside
+    id="mobile-menu-panel"
+    class="mobile-menu-panel md:hidden"
+    aria-hidden="true"
+    aria-label="Мобилно меню"
+  >
+    <div class="flex items-center justify-between gap-4 px-8 pt-8 pb-6 border-b border-white/10">
+      <a class="flex items-center shrink-0 max-w-[11rem]" href={getHomePermalink()}>
+        <Logo />
+      </a>
+      <button
+        type="button"
+        class="mobile-menu-close shrink-0 p-2.5 rounded-full text-white/90 hover:bg-white/10 hover:text-[#c79305] transition-colors"
+        aria-label="Затвори меню"
+        data-mobile-menu-close
+      >
+        <Icon name="tabler:x" class="w-7 h-7" />
+      </button>
+    </div>
+
+    <nav class="flex-1 overflow-y-auto px-8 py-8" aria-label="Мобилна навигация">
+      <ul class="flex flex-col">
+        {
+          links.map(({ text, href, links: subLinks }) => (
+            <li class="border-b border-white/5 last:border-0">
+              {subLinks?.length ? (
+                <>
+                  <span class="block px-2 py-5 text-lg font-semibold text-white/90">{text}</span>
+                  <ul class="pb-4 pl-4">
+                    {subLinks.map(({ text: text2, href: href2 }) => (
+                      <li>
+                        <a
+                          class:list={[
+                            'block py-3 px-2 text-base text-white/80 hover:text-[#c79305] transition-colors',
+                            isNavLinkActive(href2, currentPath) && navLinkActiveClass,
+                          ]}
+                          href={href2}
+                        >
+                          {text2}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              ) : (
+                <a
+                  class:list={[
+                    'block py-5 px-2 text-lg font-medium hover:text-[#c79305] transition-colors',
+                    isNavLinkActive(href, currentPath, text) ? navLinkActiveClass : 'text-white',
+                  ]}
+                  href={href}
+                  aria-current={isNavLinkActive(href, currentPath, text) ? 'page' : undefined}
+                >
+                  {text}
+                </a>
+              )}
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    {
+      actions?.length ? (
+        <div class="shrink-0 px-8 py-8 border-t border-white/10" data-aw-header-actions-mobile>
+          {actions.map((btnProps) => (
+            <Button
+              {...btnProps}
+              class="w-full py-3.5 px-6 font-semibold shadow-none text-base justify-center"
+            />
+          ))}
+        </div>
+      ) : null
+    }
+  </aside>
 </header>

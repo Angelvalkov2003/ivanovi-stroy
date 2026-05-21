@@ -1,6 +1,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
+import { SERVICE_SLUGS } from './service-slugs';
+
 export interface ServiceImage {
   src: string;
   alt: string;
@@ -14,6 +16,7 @@ export interface ServiceSubsection {
 
 export interface ServiceCategory {
   id: string;
+  slug: string;
   title: string;
   icon: string;
   summary: string;
@@ -60,7 +63,7 @@ const categoryImages = (folders: string | string[], label: string): ServiceImage
   return real.length > 0 ? real : placeholderSlots(label);
 };
 
-export const serviceCategories: ServiceCategory[] = [
+const rawServiceCategories: Omit<ServiceCategory, 'slug'>[] = [
   {
     id: 'demolition',
     title: 'Къртене и извозване',
@@ -208,6 +211,19 @@ export const serviceCategories: ServiceCategory[] = [
     images: categoryImages('grub', 'Груб строеж'),
   },
 ];
+
+export const serviceCategories: ServiceCategory[] = rawServiceCategories.map((cat) => ({
+  ...cat,
+  slug: SERVICE_SLUGS[cat.id] ?? cat.id,
+}));
+
+export function getCategoryBySlug(slug: string): ServiceCategory | undefined {
+  return serviceCategories.find((c) => c.slug === slug);
+}
+
+export function getServicePermalink(slug: string): string {
+  return `/uslugi/${slug}`;
+}
 
 export function getCategoryCover(cat: ServiceCategory): ServiceImage {
   if (cat.images?.length) {

@@ -1,0 +1,255 @@
+---
+import { Icon } from 'astro-icon/components';
+import type { ServiceImage, ServiceSubsection } from '~/data/services';
+
+interface Props {
+  images?: ServiceImage[];
+  subsections?: ServiceSubsection[];
+  title: string;
+}
+
+const { images = [], subsections, title } = Astro.props;
+
+const hasSubsections = subsections && subsections.length > 0;
+const realImages = images.filter((i) => !i.placeholder);
+const realSubsections =
+  subsections
+    ?.map((sub) => ({
+      ...sub,
+      images: sub.images.filter((i) => !i.placeholder),
+    }))
+    .filter((sub) => sub.images.length > 0) ?? [];
+
+const allImages: ServiceImage[] = hasSubsections
+  ? realSubsections.flatMap((sub) => sub.images)
+  : realImages;
+
+let lightboxIndex = 0;
+const subsectionsIndexed = realSubsections.map((sub) => ({
+  title: sub.title,
+  images: sub.images.map((img) => ({ img, index: lightboxIndex++ })),
+}));
+
+const showGallery = allImages.length > 0;
+const lightboxId = 'service-lightbox';
+---
+
+{
+  showGallery && (
+    <>
+      <section class="mt-12 pt-10 border-t border-[#8f8f8f]/20">
+        <h2 class="text-2xl font-bold text-[#141414] mb-6">Снимки от нашата работа</h2>
+
+        {hasSubsections && subsectionsIndexed.length > 0 ? (
+          <div class="space-y-8">
+            {subsectionsIndexed.map((sub) => (
+              <div>
+                <h3 class="text-lg font-semibold text-[#c79305] mb-4">{sub.title}</h3>
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3">
+                  {sub.images.map(({ img, index }) => (
+                      <button
+                        type="button"
+                        class="service-lightbox-open group block w-full overflow-hidden rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-[#c79305] focus-visible:ring-offset-2"
+                        data-lightbox-index={index}
+                        aria-label={`Отвори снимка ${index + 1}`}
+                      >
+                        <img
+                          src={img.src}
+                          alt=""
+                          class="w-full aspect-square object-cover transition-transform duration-300 group-hover:scale-105"
+                          loading="lazy"
+                          width="320"
+                          height="320"
+                        />
+                      </button>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3">
+            {allImages.map((img, index) => (
+              <button
+                type="button"
+                class="service-lightbox-open group block w-full overflow-hidden rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-[#c79305] focus-visible:ring-offset-2"
+                data-lightbox-index={index}
+                aria-label={`Отвори снимка ${index + 1}`}
+              >
+                <img
+                  src={img.src}
+                  alt=""
+                  class="w-full aspect-square object-cover transition-transform duration-300 group-hover:scale-105"
+                  loading="lazy"
+                  width="320"
+                  height="320"
+                />
+              </button>
+            ))}
+          </div>
+        )}
+      </section>
+
+      <div
+        id={lightboxId}
+        class="fixed inset-0 z-[100] hidden"
+        role="dialog"
+        aria-modal="true"
+        aria-hidden="true"
+        aria-label="Снимка на цял екран"
+      >
+        <div class="absolute inset-0 bg-[#141414]/95" data-lightbox-backdrop />
+
+        <button
+          type="button"
+          id="service-lightbox-close"
+          class="absolute top-4 right-4 z-20 p-2.5 rounded-full bg-white/10 text-white hover:bg-[#c79305] transition-colors"
+          aria-label="Затвори"
+        >
+          <Icon name="tabler:x" class="w-7 h-7" />
+        </button>
+
+        <button
+          type="button"
+          id="service-lightbox-prev"
+          class="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-20 p-2 sm:p-3 rounded-full bg-white/10 text-white hover:bg-[#c79305] transition-colors disabled:opacity-30 disabled:pointer-events-none"
+          aria-label="Предишна снимка"
+        >
+          <Icon name="tabler:chevron-left" class="w-8 h-8 sm:w-10 sm:h-10" />
+        </button>
+
+        <button
+          type="button"
+          id="service-lightbox-next"
+          class="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-20 p-2 sm:p-3 rounded-full bg-white/10 text-white hover:bg-[#c79305] transition-colors disabled:opacity-30 disabled:pointer-events-none"
+          aria-label="Следваща снимка"
+        >
+          <Icon name="tabler:chevron-right" class="w-8 h-8 sm:w-10 sm:h-10" />
+        </button>
+
+        <p
+          id="service-lightbox-counter"
+          class="absolute top-4 left-4 z-20 text-sm text-white/80 font-medium tabular-nums"
+        />
+
+        <div class="relative z-10 flex items-center justify-center w-full h-full px-14 sm:px-20 py-16">
+          <img
+            id="service-lightbox-main"
+            src=""
+            alt=""
+            class="max-w-full max-h-full object-contain select-none"
+          />
+        </div>
+      </div>
+    </>
+  )
+}
+
+<script define:vars={{ allImages, lightboxId, title }}>
+  function initServiceLightbox() {
+    const modal = document.getElementById(lightboxId);
+    const backdrop = modal?.querySelector('[data-lightbox-backdrop]');
+    const closeBtn = document.getElementById('service-lightbox-close');
+    const prevBtn = document.getElementById('service-lightbox-prev');
+    const nextBtn = document.getElementById('service-lightbox-next');
+    const mainImg = document.getElementById('service-lightbox-main');
+    const counter = document.getElementById('service-lightbox-counter');
+
+    if (!modal || !mainImg || !allImages.length) return;
+
+    if (window.__serviceLightboxAbort) window.__serviceLightboxAbort.abort();
+    window.__serviceLightboxAbort = new AbortController();
+    const { signal } = window.__serviceLightboxAbort;
+
+    let index = 0;
+
+    const render = () => {
+      if (index >= allImages.length) index = 0;
+      if (index < 0) index = allImages.length - 1;
+
+      const current = allImages[index];
+      mainImg.src = current.src;
+      mainImg.alt = title;
+
+      const multi = allImages.length > 1;
+      if (prevBtn) {
+        prevBtn.disabled = !multi;
+        prevBtn.classList.toggle('hidden', !multi);
+      }
+      if (nextBtn) {
+        nextBtn.disabled = !multi;
+        nextBtn.classList.toggle('hidden', !multi);
+      }
+      if (counter) {
+        counter.textContent = multi ? `${index + 1} / ${allImages.length}` : '';
+        counter.classList.toggle('hidden', !multi);
+      }
+    };
+
+    const open = (startIndex = 0) => {
+      index = startIndex;
+      render();
+      modal.classList.remove('hidden');
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    };
+
+    const close = () => {
+      modal.classList.add('hidden');
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+      mainImg.src = '';
+    };
+
+    document.querySelectorAll('.service-lightbox-open').forEach((btn) => {
+      btn.addEventListener(
+        'click',
+        () => {
+          const i = Number(btn.getAttribute('data-lightbox-index'));
+          open(Number.isFinite(i) ? i : 0);
+        },
+        { signal }
+      );
+    });
+
+    closeBtn?.addEventListener('click', close, { signal });
+    backdrop?.addEventListener('click', close, { signal });
+
+    prevBtn?.addEventListener(
+      'click',
+      () => {
+        index -= 1;
+        render();
+      },
+      { signal }
+    );
+    nextBtn?.addEventListener(
+      'click',
+      () => {
+        index += 1;
+        render();
+      },
+      { signal }
+    );
+
+    document.addEventListener(
+      'keydown',
+      (e) => {
+        if (modal.classList.contains('hidden')) return;
+        if (e.key === 'Escape') close();
+        if (e.key === 'ArrowLeft') {
+          index -= 1;
+          render();
+        }
+        if (e.key === 'ArrowRight') {
+          index += 1;
+          render();
+        }
+      },
+      { signal }
+    );
+  }
+
+  initServiceLightbox();
+  document.addEventListener('astro:page-load', initServiceLightbox);
+</script>

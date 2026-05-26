@@ -5,10 +5,12 @@ import Content from '~/components/widgets/Content.astro';
 import Stats from '~/components/widgets/Stats.astro';
 import { SITE_BRAND, SITE_CONTACT } from '~/data/site';
 import { whyChooseUs } from '~/data/services';
+import { PAGE_KEYWORDS } from '~/data/seo';
 
 const metadata = {
-  title: 'За нас',
-  description: `${SITE_BRAND.name} — строителна фирма в София, ръководена от ${SITE_BRAND.owner}. Кърти, чисти, извозва и всички ремонтни дейности.`,
+  title: 'За нас — строителна фирма София | Иванови Строй',
+  description: `${SITE_BRAND.name} — строителна фирма в София, ръководена от ${SITE_BRAND.owner}. Кърти, чисти, извозва и всички ремонтни дейности. Безплатен оглед.`,
+  keywords: PAGE_KEYWORDS.about,
 };
 ---
 

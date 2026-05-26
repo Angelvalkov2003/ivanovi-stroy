@@ -9,11 +9,14 @@ import { serviceCategories } from '~/data/services';
 import { getPermalink } from '~/utils/permalinks';
 import { entranceIntersect } from '~/utils/entrance';
 import { SITE_BRAND, SITE_CONTACT } from '~/data/site';
+import { PAGE_KEYWORDS, getServicesItemList } from '~/data/seo';
 
 const metadata = {
-  title: 'Строителни услуги София',
+  title: 'Строителни услуги София — пълен списък | Иванови Строй',
   description:
-    'Кофраж, бетон, гипсокартон, ВиК, ЕЛ, баня, плочки, къртене и извозване в София. Иванови Строй — всички ремонтни дейности.',
+    'Всички строителни услуги в София: къртене, гипсокартон, шпакловка, боя, плочки, покриви, кофраж, ВиК, ЕЛ и груб строеж. Безплатен оглед.',
+  keywords: PAGE_KEYWORDS.services,
+  structuredData: getServicesItemList(serviceCategories),
 };
 ---
 

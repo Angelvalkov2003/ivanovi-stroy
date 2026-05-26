@@ -1,5 +1,5 @@
 site:
-  name: Иванови Строй
+  name: Иванови Строй ЕООД
   site: 'https://ivanovi-stroy.vercel.app'
   base: '/'
   trailingSlash: false
@@ -8,14 +8,15 @@ site:
 
 metadata:
   title:
-    default: Иванови Строй — Строителни услуги София
-    template: '%s — Иванови Строй'
-  description: 'Строителна фирма София: кърти чисти извозва, кофраж, бетон, ВиК, ЕЛ, ремонти до ключ, баня и плочки. Безплатен оглед. Тел: 0886 326 102.'
+    default: Иванови Строй ЕООД — Строителни услуги София
+    template: '%s — Иванови Строй ЕООД'
+  description: 'Строителна фирма София — най-ниски цени, кърти чисти извозва. Безплатен оглед и оферта. Кофраж, бетон, ВиК, ЕЛ, ремонти до ключ. Тел: 0886 326 102.'
   robots:
     index: true
     follow: true
   openGraph:
-    site_name: Иванови Строй
+    site_name: Иванови Строй ЕООД
+    locale: bg_BG
     images:
       - url: '/logo.jpg'
         width: 800

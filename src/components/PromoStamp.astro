@@ -1,0 +1,89 @@
+---
+interface Props {
+  class?: string;
+}
+
+const { class: className = '' } = Astro.props;
+---
+
+<div
+  class:list={[
+    'promo-stamp inline-block select-none',
+    className,
+  ]}
+  role="img"
+  aria-label="Най-ниските цени в София"
+>
+  <span class="promo-stamp__ring">
+    <span class="promo-stamp__text">Най-ниските цени в София</span>
+  </span>
+</div>
+
+<style>
+  .promo-stamp {
+    filter: drop-shadow(0 4px 12px rgb(199 147 5 / 0.35));
+  }
+
+  .promo-stamp__ring {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.45rem 0.85rem;
+    border: 2.5px dashed #c79305;
+    border-radius: 0.35rem;
+    background: linear-gradient(135deg, #fff9e8 0%, #fff 45%, #fff5d6 100%);
+    transform: rotate(-10deg);
+    animation: promo-stamp-pulse 2.8s ease-in-out infinite;
+  }
+  @media (max-width: 639px) {
+    .promo-stamp {
+      transform: scale(0.92);
+      transform-origin: top left;
+    }
+  }
+
+
+  .promo-stamp__text {
+    font-size: 0.7rem;
+    line-height: 1.15;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #8b0000;
+    text-align: center;
+    max-width: 9.5rem;
+  }
+
+  @media (min-width: 640px) {
+    .promo-stamp__ring {
+      padding: 0.55rem 1rem;
+    }
+
+    .promo-stamp__text {
+      font-size: 0.8rem;
+      max-width: 11rem;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .promo-stamp__text {
+      font-size: 0.875rem;
+    }
+  }
+
+  @keyframes promo-stamp-pulse {
+    0%,
+    100% {
+      transform: rotate(-10deg) scale(1);
+    }
+    50% {
+      transform: rotate(-10deg) scale(1.04);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .promo-stamp__ring {
+      animation: none;
+    }
+  }
+</style>

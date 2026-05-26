@@ -47,6 +47,11 @@ export interface MetaData {
 
   description?: string;
 
+  keywords?: string;
+
+  /** JSON-LD objects (merged with site-wide schema) */
+  structuredData?: Record<string, unknown> | Array<Record<string, unknown>>;
+
   openGraph?: MetaDataOpenGraph;
   twitter?: MetaDataTwitter;
 }

@@ -4,11 +4,13 @@ import HeroText from '~/components/widgets/HeroText.astro';
 import Features2 from '~/components/widgets/Features2.astro';
 import ContactButtons from '~/components/ContactButtons.astro';
 import { SITE_BRAND, SITE_CONTACT } from '~/data/site';
+import { PAGE_KEYWORDS } from '~/data/seo';
 import { entranceIntersect } from '~/utils/entrance';
 
 const metadata = {
-  title: 'Контакти',
-  description: `Свържете се с ${SITE_BRAND.name} — телефон ${SITE_CONTACT.phone}, София и областта. WhatsApp и Viber.`,
+  title: 'Контакти — безплатен оглед София | Иванови Строй',
+  description: `Свържете се с ${SITE_BRAND.name} — телефон ${SITE_CONTACT.phone}, София и областта. WhatsApp и Viber. Безплатен оглед и оферта.`,
+  keywords: PAGE_KEYWORDS.contact,
 };
 ---
 

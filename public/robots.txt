@@ -1,2 +1,11 @@
 User-agent: *
-Disallow:
+Allow: /
+
+Disallow: /homes
+Disallow: /landing
+Disallow: /pricing
+Disallow: /blog
+Disallow: /tag
+Disallow: /category
+
+Sitemap: https://ivanovi-stroy.vercel.app/sitemap-index.xml

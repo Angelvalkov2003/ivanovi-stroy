@@ -1,0 +1,31 @@
+---
+import { SEO_LOCALE, absoluteUrl } from '~/data/seo';
+import { SITE_BRAND } from '~/data/site';
+
+interface Props {
+  keywords?: string;
+  geo?: boolean;
+}
+
+const { keywords, geo = false } = Astro.props;
+const pageUrl = absoluteUrl(Astro.url.pathname);
+---
+
+{keywords && <meta name="keywords" content={keywords} />}
+<meta name="author" content={SITE_BRAND.name} />
+<meta name="application-name" content={SITE_BRAND.name} />
+<meta property="og:locale" content={SEO_LOCALE} />
+<meta name="twitter:card" content="summary_large_image" />
+{
+  geo && (
+    <>
+      <meta name="geo.region" content="BG-22" />
+      <meta name="geo.placename" content="София" />
+      <meta name="geo.position" content="42.6977;23.3219" />
+      <meta name="ICBM" content="42.6977, 23.3219" />
+    </>
+  )
+}
+<meta name="format-detection" content="telephone=yes" />
+<link rel="alternate" hreflang="bg-BG" href={pageUrl} />
+<link rel="alternate" hreflang="x-default" href={pageUrl} />

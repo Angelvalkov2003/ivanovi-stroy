@@ -5,109 +5,199 @@ import Features from '~/components/widgets/Features.astro';
 import Content from '~/components/widgets/Content.astro';
 import ServiceGallery from '~/components/ServiceGallery.astro';
 import ContactButtons from '~/components/ContactButtons.astro';
+import PromoStamp from '~/components/PromoStamp.astro';
+import FreeOfferBanner from '~/components/FreeOfferBanner.astro';
+import StickyMobileCta from '~/components/StickyMobileCta.astro';
 import { SITE_BRAND, SITE_CONTACT } from '~/data/site';
 import { mainServices, whyChooseUs } from '~/data/services';
 import { entranceIntersect, entranceLoad } from '~/utils/entrance';
+import { getPermalink } from '~/utils/permalinks';
+import { PAGE_KEYWORDS, getHomeFaqStructuredData } from '~/data/seo';
+
+const homeDescription =
+  'Строителна фирма София — най-ниски цени, кърти чисти извозва. Безплатен оглед и оферта. Кофраж, бетон, ВиК, ЕЛ, ремонти до ключ. Тел: 0886 326 102.';
 
 const metadata = {
-  title: 'Строителна фирма София — Кърти, Чисти, Извозва',
-  description: SITE_BRAND.description,
+  title: 'Строителна фирма София — Най-ниски цени | Кърти, Чисти, Извозва',
+  description: homeDescription,
+  keywords: PAGE_KEYWORDS.home,
   ignoreTitleTemplate: true,
+  structuredData: getHomeFaqStructuredData(),
 };
+
+const homeFaqs = [
+  {
+    q: 'Имате ли безплатен оглед и оферта?',
+    a: 'Да — идваме на обекта в София и областта, правим оглед и даваме оферта без задължение.',
+  },
+  {
+    q: 'Защо да изберем Иванови Строй?',
+    a: 'Прозрачни цени, опитен екип, всички строителни дейности на едно място и бърз отговор на обаждания.',
+  },
+  {
+    q: 'Как да се свържа с вас?',
+    a: `Обадете се на ${SITE_CONTACT.phoneIntl}, WhatsApp или Viber — работим без почивен ден.`,
+  },
+];
 ---
 
 <Layout metadata={metadata}>
-  <Hero
-    animated
-    actions={[
-      {
-        variant: 'primary',
-        text: 'Обади се сега',
-        href: `tel:${SITE_CONTACT.phoneTel}`,
-        icon: 'tabler:phone',
-      },
-      { text: 'Виж услугите', href: '/services' },
-    ]}
-    image={{ src: '/mainpic1.png', alt: SITE_BRAND.name }}
-  >
-    <Fragment slot="title">
-      <span
-        class:list={[
-          entranceLoad(0),
-          'block text-[#c79305] text-sm sm:text-2xl md:text-3xl font-bold tracking-tight whitespace-nowrap',
-        ]}
-      >
-        {SITE_BRAND.tagline}
-      </span>
-      <span class:list={[entranceLoad(1), 'block text-[#141414] text-4xl sm:text-5xl md:text-6xl mt-1']}>
-        {SITE_BRAND.name}
-      </span>
-    </Fragment>
-    <Fragment slot="subtitle">
-      Строителна фирма в <strong>София и областта</strong> — къртене, почистване, извозване, кофраж, бетон, ВиК, ЕЛ и
-      ремонти до ключ. <span class="text-[#c79305] font-semibold">Безплатен оглед и оферта!</span>
-    </Fragment>
-  </Hero>
+  <div class="pb-[4.5rem] md:pb-0">
+    <Hero
+      animated
+      actions={[
+        {
+          variant: 'primary',
+          text: 'Обади се за безплатен оглед',
+          href: `tel:${SITE_CONTACT.phoneTel}`,
+          icon: 'tabler:phone',
+        },
+        { text: 'Всички услуги', href: '/services' },
+      ]}
+      image={{ src: '/mainpic1.png', alt: 'Строителна фирма София — Иванови Строй' }}
+    >
+      <Fragment slot="title">
+        <span
+          class:list={[
+            entranceLoad(1),
+            'block text-[#c79305] text-sm sm:text-2xl md:text-3xl font-bold tracking-tight whitespace-nowrap',
+          ]}
+        >
+          {SITE_BRAND.tagline}
+        </span>
+        <span class:list={[entranceLoad(2), 'block text-[#141414] text-4xl sm:text-5xl md:text-6xl mt-1']}>
+          {SITE_BRAND.name}
+        </span>
+      </Fragment>
+      <Fragment slot="subtitle">
+        <span class="block text-lg md:text-xl text-[#141414] mb-4">
+          Строителна фирма в <strong>София и областта</strong> — къртене, извозване, кофраж, бетон, ВиК, ЕЛ и ремонти
+          до ключ.
+        </span>
+        <div class="relative mx-auto max-w-md mb-2">
+          <PromoStamp class="absolute -top-5 left-0 z-10 -translate-x-7 sm:-translate-x-11 md:-translate-x-14" />
+          <FreeOfferBanner variant="card" />
+        </div>
+      </Fragment>
+    </Hero>
 
-  <section class:list={[entranceIntersect(), 'bg-gradient-to-b from-[#c79305]/10 to-white py-6']}>
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col items-center gap-3">
-      <ContactButtons />
-      <p class="text-center text-[#8f8f8f] text-sm font-medium">Работа без почивен ден</p>
-    </div>
-  </section>
+    <FreeOfferBanner />
 
-  <Features
-    id="uslugi"
-    tagline="Услуги"
-    title="Всичко за строителството"
-    subtitle="От къртене и извозване до довършителни ремонти — професионално и на конкурентни цени."
-    columns={2}
-    items={mainServices.map((text) => ({
-      title: text,
-      description: '',
-      icon: 'tabler:check',
-    }))}
-  />
-
-  <Content
-    isReversed
-    tagline="Защо ние"
-    title="Защо да изберете нас?"
-    items={whyChooseUs.map((text) => ({
-      title: text,
-      description: '',
-      icon: 'tabler:circle-check-filled',
-    }))}
-    image={{
-      src: '/mainpic2.png',
-      alt: 'Строителна фирма София',
-    }}
-  >
-    <Fragment slot="content">
-      <h3 class="text-2xl font-bold text-[#141414] mb-2">Омега депониране на отпадъци</h3>
-      <p class="text-[#8f8f8f]">
-        Гарантираме екологично изхвърляне на отпадъците според всички изисквания — извозване до лицензирани депа.
-      </p>
-    </Fragment>
-    <Fragment slot="bg">
-      <div class="absolute inset-0 bg-[#f5f5f5]"></div>
-    </Fragment>
-  </Content>
-
-  <ServiceGallery />
-
-  <section class:list={[entranceIntersect(), 'py-16 md:py-20 bg-[#121212] text-white']}>
-    <div class="max-w-3xl mx-auto px-4 text-center">
-      <h2 class:list={[entranceIntersect(), 'text-3xl md:text-4xl font-bold mb-3']} style="--i: 0">
-        Готови сте за вашия проект?
-      </h2>
-      <p class:list={[entranceIntersect(), 'text-[#8f8f8f] mb-8']} style="--i: 1">
-        Обадете се на <strong class="text-white">{SITE_CONTACT.phoneIntl}</strong> — отговаряме бързо, работим в София
-        и областта.
-      </p>
-      <div class:list={[entranceIntersect(), 'flex justify-center']} style="--i: 2">
-        <ContactButtons />
+    <section class:list={[entranceIntersect(), 'bg-gradient-to-b from-[#c79305]/12 to-white py-8 md:py-10']}>
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col items-center gap-4">
+        <p class="text-center text-[#141414] text-lg md:text-xl font-bold">
+          <span class="text-[#c79305]">★</span> Най-ниските цени в София · Безплатен оглед и оферта
+          <span class="text-[#c79305]">★</span>
+        </p>
+        <ContactButtons showPhone={false} />
+        <p class="text-center text-[#8f8f8f] text-sm font-medium">
+          Работа без почивен ден · {SITE_CONTACT.location}
+        </p>
       </div>
-    </div>
-  </section>
+    </section>
+
+    <Features
+      id="uslugi"
+      tagline="Услуги"
+      title="Всичко за строителството в София"
+      subtitle="От къртене и извозване до довършителни ремонти — професионално, на конкурентни цени и с безплатен оглед."
+      columns={2}
+      items={mainServices.map((text) => ({
+        title: text,
+        description: '',
+        icon: 'tabler:check',
+      }))}
+    />
+
+    <section class:list={[entranceIntersect(), 'py-12 md:py-16 bg-white']}>
+      <div class="max-w-3xl mx-auto px-4 sm:px-6 text-center">
+        <PromoStamp class="mb-6" />
+        <h2 class="text-2xl md:text-3xl font-bold text-[#141414] mb-4">
+          Строителна фирма София с прозрачни цени
+        </h2>
+        <p class="text-[#4a4a4a] leading-relaxed mb-6">
+          <strong>{SITE_BRAND.name}</strong> предлага пълен спектър строителни услуги — от къртене, почистване и
+          извозване до кофраж, бетон, ВиК, ЕЛ и ремонти до ключ. Стремим се към <strong>най-ниските цени в София</strong>
+          при същото качество на изпълнение.
+        </p>
+        <FreeOfferBanner variant="card" class="mb-6" />
+        <a
+          href={getPermalink('/services')}
+          class="inline-flex items-center justify-center rounded-full bg-[#c79305] text-white font-bold px-6 py-3 hover:bg-[#a67d04] transition"
+        >
+          Виж всички услуги
+        </a>
+      </div>
+    </section>
+
+    <Content
+      isReversed
+      tagline="Защо ние"
+      title="Защо да изберете нас?"
+      items={whyChooseUs.map((text) => ({
+        title: text,
+        description: '',
+        icon: 'tabler:circle-check-filled',
+      }))}
+      image={{
+        src: '/mainpic2.png',
+        alt: 'Строителни услуги София — Иванови Строй',
+      }}
+    >
+      <Fragment slot="content">
+        <h3 class="text-2xl font-bold text-[#141414] mb-2">Омега депониране на отпадъци</h3>
+        <p class="text-[#8f8f8f] mb-4">
+          Гарантираме екологично изхвърляне на отпадъците според всички изисквания — извозване до лицензирани депа.
+        </p>
+        <p class="text-[#c79305] font-bold text-lg">Безплатен оглед и оферта — обадете се днес!</p>
+      </Fragment>
+      <Fragment slot="bg">
+        <div class="absolute inset-0 bg-[#f5f5f5]"></div>
+      </Fragment>
+    </Content>
+
+    <ServiceGallery />
+
+    <section class:list={[entranceIntersect(), 'py-12 md:py-16 bg-[#f8f8f8]']}>
+      <div class="max-w-3xl mx-auto px-4 sm:px-6">
+        <h2 class="text-2xl md:text-3xl font-bold text-[#141414] text-center mb-8">Често задавани въпроси</h2>
+        <div class="space-y-4">
+          {
+            homeFaqs.map((item) => (
+              <details class="group rounded-xl border border-[#8f8f8f]/20 bg-white px-5 py-4 shadow-sm">
+                <summary class="cursor-pointer font-semibold text-[#141414] list-none flex justify-between items-center gap-2">
+                  {item.q}
+                  <span class="text-[#c79305] text-xl shrink-0 group-open:rotate-45 transition-transform">+</span>
+                </summary>
+                <p class="mt-3 text-[#4a4a4a] leading-relaxed">{item.a}</p>
+              </details>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <FreeOfferBanner />
+
+    <section class:list={[entranceIntersect(), 'py-16 md:py-20 bg-[#121212] text-white']}>
+      <div class="max-w-3xl mx-auto px-4 text-center">
+        <PromoStamp class="mb-5" />
+        <h2 class:list={[entranceIntersect(), 'text-3xl md:text-4xl font-bold mb-2']} style="--i: 0">
+          Готови сте за вашия проект?
+        </h2>
+        <p class:list={[entranceIntersect(), 'text-[#c79305] text-xl md:text-2xl font-extrabold uppercase mb-4']} style="--i: 1">
+          Безплатен оглед и оферта
+        </p>
+        <p class:list={[entranceIntersect(), 'text-[#8f8f8f] mb-8']} style="--i: 2">
+          Обадете се на <strong class="text-white">{SITE_CONTACT.phoneIntl}</strong> — отговаряме бързо, работим в
+          София и областта. <strong class="text-white">Най-ниските цени</strong> след оглед на място.
+        </p>
+        <div class:list={[entranceIntersect(), 'flex justify-center']} style="--i: 3">
+          <ContactButtons />
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <StickyMobileCta />
 </Layout>

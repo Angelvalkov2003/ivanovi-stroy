@@ -2,13 +2,13 @@
 import Layout from '~/layouts/PageLayout.astro';
 import ContactButtons from '~/components/ContactButtons.astro';
 import ServiceDetailImages from '~/components/ServiceDetailImages.astro';
-import {
-  serviceCategories,
-  getCategoryBySlug,
-  hasRealPhotos,
-  getCategoryRealImages,
-} from '~/data/services';
+import { serviceCategories, hasRealPhotos, getCategoryRealImages } from '~/data/services';
 import { getServiceContent } from '~/data/service-content';
+import {
+  getBreadcrumbList,
+  getServicePageMeta,
+  getServiceStructuredData,
+} from '~/data/seo';
 import { getPermalink } from '~/utils/permalinks';
 import { SITE_BRAND, SITE_CONTACT } from '~/data/site';
 
@@ -21,12 +21,24 @@ export async function getStaticPaths() {
 
 const { category } = Astro.props;
 const pageContent = getServiceContent(category.id);
+const seo = getServicePageMeta(category);
 const showPhotos = hasRealPhotos(category);
 const images = getCategoryRealImages(category);
 
 const metadata = {
-  title: `${category.title} София`,
-  description: pageContent.metaDescription,
+  title: seo.title,
+  description: seo.description,
+  keywords: seo.keywords,
+  canonical: seo.canonical,
+  openGraph: seo.openGraph,
+  structuredData: [
+    getBreadcrumbList([
+      { name: 'Начало', path: '/' },
+      { name: 'Услуги', path: '/services' },
+      { name: category.title, path: `/uslugi/${category.slug}` },
+    ]),
+    getServiceStructuredData(category),
+  ],
 };
 ---
 
@@ -34,7 +46,7 @@ const metadata = {
   <article class="bg-white">
     <div class="bg-[#f8f8f8] border-b border-[#8f8f8f]/15">
       <div class="max-w-4xl mx-auto px-4 sm:px-6 py-4">
-        <nav class="text-sm text-[#8f8f8f]" aria-label="Breadcrumb">
+        <nav class="text-sm text-[#8f8f8f]" aria-label="Breadcrumb" itemscope itemtype="https://schema.org/BreadcrumbList">
           <a href={getPermalink('/')} class="hover:text-[#c79305]">Начало</a>
           <span class="mx-2">/</span>
           <a href={getPermalink('/services')} class="hover:text-[#c79305]">Услуги</a>

@@ -12,11 +12,14 @@ import Metadata from '~/components/common/Metadata.astro';
 import SiteVerification from '~/components/common/SiteVerification.astro';
 import Analytics from '~/components/common/Analytics.astro';
 import BasicScripts from '~/components/common/BasicScripts.astro';
+import StructuredData from '~/components/seo/StructuredData.astro';
+import SeoExtras from '~/components/seo/SeoExtras.astro';
 
-// Comment the line below to disable View Transitions
 import { ClientRouter } from 'astro:transitions';
 
 import type { MetaData as MetaDataType } from '~/types';
+import { isNoIndexPath } from '~/data/seo-paths';
+import { getSiteStructuredData, PAGE_KEYWORDS } from '~/data/seo';
 
 export interface Props {
   metadata?: MetaDataType;
@@ -24,6 +27,36 @@ export interface Props {
 
 const { metadata = {} } = Astro.props;
 const { language, textDirection } = I18N;
+
+const pathname = Astro.url.pathname;
+const noIndex = isNoIndexPath(pathname);
+
+const defaultKeywords =
+  pathname === '/' || pathname === ''
+    ? PAGE_KEYWORDS.home
+    : pathname.startsWith('/services')
+      ? PAGE_KEYWORDS.services
+      : pathname.startsWith('/about')
+        ? PAGE_KEYWORDS.about
+        : pathname.startsWith('/contact')
+          ? PAGE_KEYWORDS.contact
+          : undefined;
+
+const mergedMetadata: MetaDataType = {
+  ...metadata,
+  robots: noIndex ? { index: false, follow: false } : (metadata.robots ?? { index: true, follow: true }),
+  keywords: metadata.keywords ?? defaultKeywords,
+};
+
+const extraSchema = metadata.structuredData
+  ? Array.isArray(metadata.structuredData)
+    ? metadata.structuredData
+    : [metadata.structuredData]
+  : [];
+
+const structuredData = noIndex ? extraSchema : [...getSiteStructuredData(), ...extraSchema];
+
+const isHome = pathname === '/' || pathname === '';
 ---
 
 <!doctype html>
@@ -34,13 +67,12 @@ const { language, textDirection } = I18N;
     <Favicons />
     <CustomStyles />
     <ApplyColorMode />
-    <Metadata {...metadata} />
+    <Metadata {...mergedMetadata} />
+    <SeoExtras keywords={mergedMetadata.keywords} geo={isHome} />
+  <StructuredData data={structuredData} />
     <SiteVerification />
     <Analytics />
 
-    <link rel="preconnect" href="https://images.unsplash.com" />
-
-    <!-- Comment the line below to disable View Transitions -->
     <ClientRouter fallback="swap" />
   </head>
 

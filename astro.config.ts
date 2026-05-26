@@ -14,6 +14,7 @@ import type { AstroIntegration } from 'astro';
 import astrowind from './vendor/integration';
 
 import { readingTimeRemarkPlugin, responsiveTablesRehypePlugin } from './src/utils/frontmatter';
+import { isNoIndexPath } from './src/data/seo-paths';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -25,7 +26,20 @@ export default defineConfig({
   output: 'static',
 
   integrations: [
-    sitemap(),
+    sitemap({
+      filter: (page) => !isNoIndexPath(new URL(page).pathname),
+      serialize(item) {
+        const path = new URL(item.url).pathname.replace(/\/$/, '') || '/';
+        if (path === '/') {
+          item.priority = 1;
+        } else if (path.startsWith('/uslugi/')) {
+          item.priority = 0.85;
+        } else if (['/services', '/contact', '/about'].includes(path)) {
+          item.priority = 0.9;
+        }
+        return item;
+      },
+    }),
     mdx(),
     icon({
       include: {

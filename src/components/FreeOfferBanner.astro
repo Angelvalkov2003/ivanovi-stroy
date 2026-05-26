@@ -1,0 +1,60 @@
+---
+import { Icon } from 'astro-icon/components';
+import { SITE_CONTACT } from '~/data/site';
+
+interface Props {
+  variant?: 'bar' | 'card';
+  showPhone?: boolean;
+  class?: string;
+}
+
+const { variant = 'bar', showPhone = true, class: className = '' } = Astro.props;
+
+const isBar = variant === 'bar';
+---
+
+{
+  isBar ? (
+    <div
+      class:list={[
+        'free-offer-bar w-full bg-gradient-to-r from-[#c79305] via-[#d4a017] to-[#c79305] text-white shadow-md',
+        className,
+      ]}
+    >
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 md:py-4 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 text-center">
+        <div class="flex items-center gap-2">
+          <Icon name="tabler:gift" class="w-6 h-6 md:w-7 md:h-7 shrink-0 opacity-95" aria-hidden="true" />
+          <p class="text-base sm:text-lg md:text-xl font-extrabold tracking-wide uppercase">
+            Безплатен оглед и оферта
+          </p>
+        </div>
+        <span class="hidden sm:inline text-white/70 font-light" aria-hidden="true">
+          |
+        </span>
+        <p class="text-sm md:text-base font-medium text-white/95">
+          Без ангажимент · София и областта
+        </p>
+        {showPhone && (
+          <a
+            href={`tel:${SITE_CONTACT.phoneTel}`}
+            class="mt-1 sm:mt-0 inline-flex items-center gap-1.5 rounded-full bg-white text-[#141414] px-4 py-1.5 text-sm font-bold hover:bg-[#f5f5f5] transition shadow-sm"
+          >
+            <Icon name="tabler:phone" class="w-4 h-4" />
+            {SITE_CONTACT.phoneIntl}
+          </a>
+        )}
+      </div>
+    </div>
+  ) : (
+    <div
+      class:list={[
+        'rounded-2xl border-2 border-[#c79305] bg-gradient-to-br from-[#fff9e8] to-white px-5 py-4 text-center shadow-sm',
+        className,
+      ]}
+    >
+      <p class="text-[#c79305] text-xs font-bold uppercase tracking-widest mb-1">Специална оферта</p>
+      <p class="text-[#141414] text-xl md:text-2xl font-extrabold leading-tight">Безплатен оглед и оферта</p>
+      <p class="text-[#8f8f8f] text-sm mt-1">Обадете се — идваме на място, без задължение</p>
+    </div>
+  )
+}

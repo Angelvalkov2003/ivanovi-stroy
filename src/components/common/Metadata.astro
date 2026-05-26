@@ -4,7 +4,7 @@ import { SEO } from 'astro-seo';
 
 import type { SEOProps } from 'astro-seo';
 
-import { SITE, METADATA, I18N } from 'astrowind:config';
+import { SITE, METADATA } from 'astrowind:config';
 import type { MetaData, MetaDataOpenGraph } from '~/types';
 import { getCanonical } from '~/utils/permalinks';
 
@@ -29,7 +29,7 @@ const mergedOg: MetaDataOpenGraph = merge(
     url: canonical,
     siteName: SITE?.name,
     images: [],
-    locale: I18N?.language || 'en',
+    locale: 'bg_BG',
     type: 'website',
   },
   METADATA?.openGraph,
@@ -99,13 +99,13 @@ const seoProps: SEOProps = {
       ? !robots.index
       : typeof METADATA?.robots?.index !== 'undefined'
         ? !METADATA.robots.index
-        : true,
+        : false,
   nofollow:
     typeof robots?.follow !== 'undefined'
       ? !robots.follow
       : typeof METADATA?.robots?.follow !== 'undefined'
         ? !METADATA.robots.follow
-        : true,
+        : false,
   description: description || METADATA?.description,
   openGraph: buildOpenGraph(adaptedOg),
   twitter: mergedTwitter,

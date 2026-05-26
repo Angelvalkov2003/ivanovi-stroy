@@ -1,0 +1,39 @@
+---
+import { Icon } from 'astro-icon/components';
+import { SITE_CONTACT } from '~/data/site';
+---
+
+<div
+  class="sticky-mobile-cta fixed bottom-0 inset-x-0 z-40 md:hidden border-t border-[#c79305]/30 bg-[#121212]/95 backdrop-blur-md safe-area-pb"
+  aria-label="Бърз контакт"
+>
+  <div class="flex items-stretch min-h-[3.25rem]">
+    <a
+      href={`tel:${SITE_CONTACT.phoneTel}`}
+      class="flex-1 flex flex-col items-center justify-center gap-0.5 py-2 bg-[#c79305] text-white font-bold text-xs"
+    >
+      <Icon name="tabler:phone" class="w-5 h-5" />
+      <span>Обади се</span>
+    </a>
+    <div class="flex-[1.4] flex flex-col items-center justify-center px-2 py-1.5 bg-[#1a1a1a] text-center">
+      <span class="text-[#c79305] text-[10px] font-bold uppercase leading-none">Безплатен оглед</span>
+      <span class="text-white text-xs font-semibold leading-tight mt-0.5">и оферта</span>
+    </div>
+    <a
+      href={SITE_CONTACT.whatsapp}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="flex-1 flex flex-col items-center justify-center gap-0.5 py-2 bg-[#25D366] text-white font-bold text-xs"
+      aria-label="WhatsApp"
+    >
+      <Icon name="tabler:brand-whatsapp" class="w-5 h-5" />
+      <span>WhatsApp</span>
+    </a>
+  </div>
+</div>
+
+<style>
+  .safe-area-pb {
+    padding-bottom: env(safe-area-inset-bottom, 0);
+  }
+</style>
